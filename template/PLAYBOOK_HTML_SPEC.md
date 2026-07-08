@@ -12,9 +12,11 @@ human-facing twin of `FABLE_PROMPT_PLAYBOOK.json` — same blocks, same text, sa
 ## Structural laws (verifier-enforced)
 
 1. **Self-contained.** Zero network dependencies: no CDN scripts, no external stylesheets,
-   fonts, or images, no `fetch`/`XMLHttpRequest`/dynamic `import(`. The only `http(s)`
-   strings permitted anywhere in the file are `www.w3.org` XML namespaces inside inline
-   SVG. Everything inline; images (if any) as data: URIs.
+   fonts, or images, no `fetch`/`XMLHttpRequest`/dynamic `import(`. Plain hyperlinks
+   (`<a href="https://…">`) are allowed — a link the owner may click is not a loaded
+   resource. Outside `href` attributes, the only `http(s)` strings permitted are
+   `www.w3.org` XML namespaces inside inline SVG. Everything inline; images (if any) as
+   data: URIs.
 2. **One `<textarea id="block-NN">` per block**, in playbook order, containing the block's
    `text` exactly (HTML-escaped in source; identical to the JSON `text` after unescaping,
    modulo a single leading newline). These textareas are the copy source — the visible
@@ -35,6 +37,8 @@ human-facing twin of `FABLE_PROMPT_PLAYBOOK.json` — same blocks, same text, sa
 Style the page with the **dmr-danmanreal-design** skill installed in Phase 1 — follow its
 SKILL.md and both references (the written canon and the byte-exact exemplar). The playbook
 should look like it belongs on danmanreal.com: that is the influence in FABLES_INFLUENCE.
+That includes the skill's **credit chips** (the top-right YouTube + Discord cluster from
+the SKILL.md public addendum) — use the exact block, unrestyled.
 
 Required regardless of design system: readable at 1280px and on mobile widths, keyboard
 reachable controls, `prefers-reduced-motion` respected, and section navigation (a fixed

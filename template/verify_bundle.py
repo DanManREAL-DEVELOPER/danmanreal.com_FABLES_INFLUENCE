@@ -193,7 +193,10 @@ def main():
                     hard.append(f"E: workflow-data sha mismatch for {b['html_id']}")
 
     # ---- F: HTML self-containment -------------------------------------------
-    for ref in re.findall(r'https?://[^\s"\'<>&)]+', page):
+    # Plain hyperlinks (href="https://…") are allowed — a link the owner may click is
+    # not a loaded resource. Everything else external is banned.
+    page_no_links = re.sub(r'href="https?://[^"]*"', 'href=""', page)
+    for ref in re.findall(r'https?://[^\s"\'<>&)]+', page_no_links):
         if "www.w3.org" not in ref:
             hard.append(f"F: external reference in HTML: {ref[:80]}")
     for tok in ("fetch(", "XMLHttpRequest", "import("):
