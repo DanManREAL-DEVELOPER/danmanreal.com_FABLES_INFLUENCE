@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DANMANREAL — Brand System Wall</title>
+<style>
+/* ============================================================
+   DANMANREAL DESIGN — THE BRAND SYSTEM WALL (Fable pass v2)
+   Authority: frontend/BRAND_TOKENS.css (GLB-measured, asset-led)
+   Structure bar: FABLES DESIGN (chaptered document, staged motion)
+   Identity: HARD IN THE PAINT — wet street paint on bronze-veined
+   gunmetal frames, jewel-lit, over a green-tinted abyss.
+   ============================================================ */
+:root{
+  /* —— GLB-measured tokens (BRAND_TOKENS.css, verbatim values) —— */
+  --dmr-brand-blue:#197cc1;
+  --dmr-brand-green:#1fb06f;
+  --dmr-paint-blue:#12b7f8;
+  --dmr-paint-green:#26f296;
+  --dmr-frame-metal:#755934;
+  --dmr-frame-metal-bright:#b18b4e;
+  --dmr-jewel-blue:#0cb6f8;
+  --dmr-jewel-depth:#156faa;
+  --dmr-bg-abyss:#030c09;
+  --dmr-frame-charcoal:#1d2322;
+  --dmr-font-display:'Archivo Black','Arial Black',Impact,sans-serif;
+  --dmr-font-body:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --dmr-space-hero:clamp(4rem,10vh,7rem);
+  --dmr-shadow-frame:0 22px 60px rgba(3,12,9,.85),0 0 42px rgba(12,182,248,.25);
+  --dmr-cta-bg:linear-gradient(135deg,var(--dmr-brand-blue) 0%,var(--dmr-brand-green) 100%);
+  --dmr-cta-text:#eafcf4;
+  --dmr-loading-bg:radial-gradient(120% 90% at 50% 38%,#0d2a22 0%,#030c09 70%);
+  /* —— artistic accents (Dan-approved leverage) —— */
+  --dmr-street-purple:#8b3df0;
+  --dmr-street-pink:#f04fb0;
+  /* —— legibility law: no deep grey on the abyss —— */
+  --dmr-ink:#eafcf4;
+  --dmr-ink-soft:#cdeede;
+  --dmr-ink-dim:#a9d8c3;
+  --dmr-space-chapter:clamp(5.5rem,13vh,9.5rem);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--dmr-bg-abyss);
+  background-image:
+    radial-gradient(90% 60% at 50% -10%,rgba(13,42,34,.9) 0%,transparent 60%),
+    radial-gradient(60% 40% at 85% 30%,rgba(21,111,170,.14) 0%,transparent 70%),
+    radial-gradient(50% 40% at 12% 70%,rgba(31,176,111,.10) 0%,transparent 70%);
+  color:var(--dmr-ink);
+  font-family:var(--dmr-font-body);
+  font-size:17px;line-height:1.72;
+  overflow-x:hidden;
+}
+/* film grain, FABLES-style, dark-tuned */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.055;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,4vw,2.5rem)}
+
+/* ============ THE FRAME — every block wears it ============ */
+.frame{
+  position:relative;
+  padding:24px;
+  border-radius:16px;
+  background:
+    repeating-linear-gradient(112deg,transparent 0 14px,rgba(177,139,78,.45) 14px 17px,transparent 17px 38px),
+    repeating-linear-gradient(-64deg,transparent 0 20px,rgba(117,89,52,.55) 20px 23px,transparent 23px 48px),
+    linear-gradient(160deg,#39443f 0%,#252d2b 30%,var(--dmr-frame-charcoal) 55%,#141a18 80%,#2a3230 100%),
+    var(--dmr-frame-charcoal);
+  box-shadow:var(--dmr-shadow-frame),inset 0 1px 0 rgba(177,139,78,.35);
+  margin-top:var(--dmr-space-chapter);
+}
+.frame::before{ /* bronze inner bezel line */
+  content:"";position:absolute;inset:14px;border-radius:10px;pointer-events:none;
+  border:2px solid rgba(177,139,78,.85);
+  box-shadow:inset 0 0 0 1px rgba(3,12,9,.9),0 0 12px rgba(177,139,78,.25);
+}
+.frame::after{ /* bronze outer highlight */
+  content:"";position:absolute;inset:0;border-radius:16px;pointer-events:none;
+  border:2px solid rgba(177,139,78,.6);
+  box-shadow:inset 0 0 22px rgba(3,12,9,.55);
+}
+.frame-body{
+  position:relative;border-radius:8px;
+  background:linear-gradient(180deg,#0b1712 0%,#07120c 100%);
+  padding:clamp(2rem,4.5vw,3.6rem);
+  overflow:hidden;
+}
+/* corner jewels — the fade Dan loves, kept perfect */
+.jewel{
+  position:absolute;width:28px;height:28px;border-radius:50%;z-index:5;
+  background:radial-gradient(circle at 34% 28%,#d9f4ff 0%,var(--dmr-jewel-blue) 38%,var(--dmr-jewel-depth) 72%,#072c44 100%);
+  border:1px solid rgba(177,139,78,.8);
+  box-shadow:0 0 16px rgba(12,182,248,.9),0 0 44px rgba(12,182,248,.45),inset 0 -3px 6px rgba(3,12,9,.55);
+  animation:jewelFade 5.2s ease-in-out infinite;
+}
+.jewel.tl{top:-9px;left:-9px}.jewel.tr{top:-9px;right:-9px;animation-delay:1.3s}
+.jewel.bl{bottom:-9px;left:-9px;animation-delay:2.6s}.jewel.br{bottom:-9px;right:-9px;animation-delay:3.9s}
+@keyframes jewelFade{
+  0%,100%{box-shadow:0 0 12px rgba(12,182,248,.85),0 0 30px rgba(12,182,248,.35),inset 0 -2px 4px rgba(3,12,9,.5);filter:saturate(1)}
+  50%{box-shadow:0 0 22px rgba(38,242,150,.75),0 0 52px rgba(12,182,248,.45),inset 0 -2px 4px rgba(3,12,9,.5);filter:saturate(1.35)}
+}
+
+/* ============ THE PAINT — living liquid, gooey physics ============ */
+/* SVG #goo (blur -> alpha-contrast) fuses tongue + drop into one
+   liquid body; separation happens the moment distance beats the goo. */
+.paintline{
+  position:absolute;top:0;left:0;right:0;height:150px;
+  pointer-events:none;z-index:4;
+  filter:url(#goo) drop-shadow(0 4px 6px rgba(3,12,9,.55));
+}
+.paintline .bar{
+  position:absolute;top:0;left:0;right:0;height:15px;
+}
+.paintline .tongue{
+  position:absolute;top:0;width:26px;height:52px;
+  border-radius:0 0 14px 14px;
+  transform-origin:top center;
+  animation:tongue 7s cubic-bezier(.45,.02,.35,1) infinite;
+}
+.paintline .drop{
+  position:absolute;top:34px;width:16px;height:16px;border-radius:50%;
+  animation:drop 7s cubic-bezier(.55,.06,.68,.19) infinite;
+}
+.paintline .drop.s{width:11px;height:11px}
+@keyframes tongue{
+  0%,18%{transform:scaleY(.42)}
+  46%{transform:scaleY(1)}
+  62%{transform:scaleY(.88)}
+  100%{transform:scaleY(.42)}
+}
+@keyframes drop{
+  0%,30%{transform:translateY(0) scale(.6);opacity:1}
+  46%{transform:translateY(6px) scale(1);opacity:1}
+  84%{transform:translateY(96px) scale(1);opacity:1}
+  96%{transform:translateY(118px) scale(.92);opacity:0}
+  100%{transform:translateY(118px) scale(.9);opacity:0}
+}
+/* wet gloss on top of the paint bar (outside goo so it stays sharp) */
+.paintgloss{
+  position:absolute;top:2px;left:2%;right:40%;height:4px;z-index:5;border-radius:3px;
+  background:linear-gradient(90deg,rgba(255,255,255,.42),rgba(255,255,255,.05));
+  pointer-events:none;
+}
+.paint-blue .bar,.paint-blue .tongue,.paint-blue .drop{background:linear-gradient(180deg,var(--dmr-paint-blue),var(--dmr-brand-blue))}
+.paint-green .bar,.paint-green .tongue,.paint-green .drop{background:linear-gradient(180deg,var(--dmr-paint-green),var(--dmr-brand-green))}
+.paint-street .bar,.paint-street .tongue,.paint-street .drop{background:linear-gradient(180deg,var(--dmr-street-pink),var(--dmr-street-purple))}
+
+/* ============ TYPE — large, confident, legible ============ */
+.kicker{
+  font-family:var(--dmr-font-body);font-weight:800;
+  font-size:.86rem;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--dmr-paint-green);margin-bottom:1.1rem;
+}
+.kicker .num{color:var(--dmr-paint-blue);margin-right:.7em}
+h1{
+  font-family:var(--dmr-font-display);
+  font-size:clamp(3.2rem,9vw,7rem);
+  line-height:.98;letter-spacing:-.01em;color:var(--dmr-ink);
+  text-shadow:0 6px 30px rgba(3,12,9,.9);
+}
+h1 .paint{
+  background:linear-gradient(115deg,var(--dmr-paint-blue) 8%,var(--dmr-paint-green) 88%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 26px rgba(18,183,248,.35));
+}
+h2{
+  font-family:var(--dmr-font-display);
+  font-size:clamp(2.1rem,5vw,3.4rem);
+  line-height:1.05;color:var(--dmr-ink);margin-bottom:1.4rem;
+}
+h2 .tint-blue{color:var(--dmr-paint-blue)}
+h2 .tint-green{color:var(--dmr-paint-green)}
+h3{font-family:var(--dmr-font-display);font-size:1.15rem;letter-spacing:.02em;color:var(--dmr-ink);margin-bottom:.6rem}
+.lead{font-size:clamp(1.12rem,1.7vw,1.3rem);line-height:1.75;color:var(--dmr-ink-soft);max-width:62ch}
+p{color:var(--dmr-ink-soft)}
+.dim{color:var(--dmr-ink-dim)}
+.mono{font-family:ui-monospace,'Cascadia Code',Menlo,Consolas,monospace;font-size:.92em;color:var(--dmr-paint-blue)}
+
+/* ============ COVER ============ */
+.cover{padding-top:var(--dmr-space-hero)}
+.cover .frame{margin-top:0}
+.cover-body{padding-top:clamp(3.5rem,7vw,5.5rem);text-align:center}
+.cover .saying{
+  margin:1.8rem auto .6rem;font-size:clamp(1.25rem,2.4vw,1.7rem);
+  font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--dmr-ink);
+}
+.cover .saying em{
+  font-style:normal;
+  background:linear-gradient(120deg,var(--dmr-paint-green),var(--dmr-paint-blue));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.cover .heritage{max-width:56ch;margin:1.2rem auto 0;color:var(--dmr-ink-dim);font-size:1.02rem}
+.cover .heritage b{color:var(--dmr-ink)}
+
+/* ============ CHAPTER HEADERS (breathing room) ============ */
+.chapter-head{margin-top:var(--dmr-space-chapter);text-align:left}
+.chapter-head .rule{
+  height:2px;margin-top:1.6rem;border-radius:2px;
+  background:linear-gradient(90deg,var(--dmr-paint-blue),var(--dmr-paint-green) 40%,transparent 85%);
+  box-shadow:0 0 14px rgba(18,183,248,.4);
+}
+.chapter-head + .frame{margin-top:2.6rem}
+
+/* ============ I. TOKENS ============ */
+.swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.6rem;margin-top:1.8rem}
+.swatch{
+  border-radius:10px;overflow:hidden;position:relative;
+  border:1px solid rgba(177,139,78,.45);
+  box-shadow:0 10px 30px rgba(3,12,9,.7);
+}
+.swatch .fade{height:130px}
+.swatch .meta{padding:.95rem 1.1rem;background:#0a1512;border-top:1px solid rgba(177,139,78,.3)}
+.swatch .meta b{display:block;color:var(--dmr-ink);font-size:1.02rem;letter-spacing:.02em}
+.swatch .meta span{color:var(--dmr-ink-dim);font-size:.9rem}
+.swatch .hex{float:right;color:var(--dmr-paint-green);font-family:ui-monospace,Menlo,monospace;font-size:.9rem;margin-top:2px}
+.f-bb{background:linear-gradient(165deg,var(--dmr-paint-blue) 0%,var(--dmr-brand-blue) 62%,#0d4b78 100%)}
+.f-gg{background:linear-gradient(165deg,var(--dmr-paint-green) 0%,var(--dmr-brand-green) 62%,#0d5c3d 100%)}
+.f-jewel{background:radial-gradient(140% 120% at 30% 18%,#d9f4ff 0%,var(--dmr-jewel-blue) 34%,var(--dmr-jewel-depth) 68%,#072c44 100%)}
+.f-metal{background:linear-gradient(150deg,var(--dmr-frame-metal-bright) 0%,var(--dmr-frame-metal) 45%,#3d2d18 100%)}
+.f-abyss{background:linear-gradient(180deg,#0d2a22 0%,var(--dmr-bg-abyss) 80%)}
+.f-street{background:linear-gradient(150deg,var(--dmr-street-pink) 0%,var(--dmr-street-purple) 70%)}
+
+/* ============ II. PAINT LAB ============ */
+.paintlab{position:relative;min-height:330px;border-radius:10px;overflow:hidden;
+  background:linear-gradient(180deg,#0b1713 0%,#08110d 100%);
+  border:1px solid rgba(177,139,78,.4);margin-top:1.9rem}
+.paintlab .label{position:absolute;bottom:1.1rem;left:1.3rem;z-index:6}
+.paintlab .label b{display:block;color:var(--dmr-ink);font-size:1.05rem}
+.paintlab .label span{color:var(--dmr-ink-dim);font-size:.92rem}
+.physics{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.4rem;margin-top:1.8rem}
+.physics .rulecard{background:#0a1512;border:1px solid rgba(177,139,78,.35);border-radius:10px;padding:1.25rem 1.35rem}
+.physics .rulecard b{color:var(--dmr-paint-blue)}
+.physics .rulecard p{font-size:.98rem;color:var(--dmr-ink-soft);margin-top:.35rem}
+
+/* ============ III. FRAME ANATOMY ============ */
+.anatomy{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:1.9rem}
+.anatomy .part{background:#0a1512;border:1px solid rgba(177,139,78,.35);border-radius:10px;padding:1.3rem 1.4rem;position:relative}
+.anatomy .part .chip{
+  display:inline-block;width:44px;height:44px;border-radius:9px;margin-bottom:.9rem;
+  border:1px solid rgba(177,139,78,.5);
+}
+.anatomy .part p{font-size:.98rem}
+
+/* ============ IV. VOICE / TYPE ============ */
+.typespec{display:grid;gap:1.6rem;margin-top:1.7rem}
+.typespec .row{display:flex;align-items:baseline;gap:1.6rem;flex-wrap:wrap;border-bottom:1px dashed rgba(177,139,78,.35);padding-bottom:1.3rem}
+.typespec .demo{color:var(--dmr-ink)}
+.typespec .spec{color:var(--dmr-ink-dim);font-size:.92rem;min-width:230px}
+
+/* ============ V. MOVES / COMPONENTS ============ */
+.moves{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.7rem;margin-top:1.9rem}
+.move{background:#0a1512;border:1px solid rgba(177,139,78,.4);border-radius:10px;padding:1.6rem;text-align:center}
+.move p{font-size:.95rem;margin-top:.9rem}
+.cta{
+  display:inline-block;padding:1rem 2.4rem;border-radius:12px;
+  background:var(--dmr-cta-bg);color:var(--dmr-cta-text);
+  font-family:var(--dmr-font-display);font-size:1.05rem;letter-spacing:.05em;
+  text-decoration:none;border:1px solid rgba(234,252,244,.25);
+  box-shadow:0 10px 30px rgba(18,183,248,.28),inset 0 1px 0 rgba(255,255,255,.3);
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+.cta:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(38,242,150,.4),inset 0 1px 0 rgba(255,255,255,.35)}
+.loadingdemo{height:110px;border-radius:10px;background:var(--dmr-loading-bg);display:flex;align-items:center;justify-content:center;border:1px solid rgba(177,139,78,.3)}
+.loadingdemo .pulse{width:15px;height:15px;border-radius:50%;background:var(--dmr-jewel-blue);box-shadow:0 0 18px rgba(12,182,248,.9);animation:jewelFade 2.4s ease-in-out infinite}
+.videodemo{height:110px;border-radius:10px;background:#08110d;display:flex;align-items:center;justify-content:center;border:2px solid var(--dmr-frame-metal);box-shadow:inset 0 0 30px rgba(3,12,9,.8)}
+.videodemo span{color:var(--dmr-ink-dim);font-size:.9rem;letter-spacing:.2em;text-transform:uppercase}
+
+/* ============ VI. THE LAW ============ */
+.law{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.7rem;margin-top:1.9rem}
+.law .col{border-radius:10px;padding:1.5rem 1.6rem;background:#0a1512}
+.law .do{border:1px solid rgba(38,242,150,.45)}
+.law .dont{border:1px solid rgba(240,79,176,.4)}
+.law h3.do-h{color:var(--dmr-paint-green)}
+.law h3.dont-h{color:var(--dmr-street-pink)}
+.law ul{list-style:none;margin-top:.7rem}
+.law li{padding:.42rem 0 .42rem 1.7rem;position:relative;font-size:1rem;color:var(--dmr-ink-soft)}
+.law .do li::before{content:"●";position:absolute;left:0;color:var(--dmr-paint-green)}
+.law .dont li::before{content:"●";position:absolute;left:0;color:var(--dmr-street-pink)}
+
+/* ============ EPILOGUE ============ */
+.epilogue{margin-top:var(--dmr-space-chapter);padding:clamp(4rem,9vh,6.5rem) 0 5.5rem;
+  background:linear-gradient(180deg,transparent 0%,#020806 30%,#010503 100%);text-align:center}
+.epilogue .sig{
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  font-size:clamp(1.3rem,2.6vw,1.8rem);
+  background:linear-gradient(120deg,var(--dmr-paint-blue),var(--dmr-paint-green));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.epilogue .fine{margin-top:1.2rem;color:var(--dmr-ink-dim);font-size:.92rem;letter-spacing:.06em}
+
+/* ============ MOTION — staged and confident ============ */
+.fadeup{opacity:.3;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
+.fadeup.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .fadeup{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+@media (max-width:640px){
+  .paintline{height:110px}
+  .frame-body{padding:1.5rem 1.2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- The gooey physics: blur fuses shapes; alpha-contrast re-hardens the
+     union into one wet body. Neck + detach happen exactly like liquid. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur"/>
+      <feColorMatrix in="blur" mode="matrix"
+        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 23 -11" result="goo"/>
+      <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ================= COVER ================= -->
+<header class="cover wrap">
+  <div class="frame fadeup">
+    <span class="jewel tl"></span><span class="jewel tr"></span>
+    <span class="jewel bl"></span><span class="jewel br"></span>
+    <div class="paintline paint-blue" aria-hidden="true">
+      <div class="bar"></div>
+      <div class="tongue" style="left:7%;animation-delay:0s"></div>
+      <div class="drop"   style="left:8.2%;animation-delay:0s"></div>
+      <div class="tongue" style="left:23%;width:20px;animation-delay:2.1s"></div>
+      <div class="drop s" style="left:23.8%;animation-delay:2.1s"></div>
+      <div class="tongue" style="left:47%;width:32px;animation-delay:4.4s"></div>
+      <div class="drop"   style="left:48.5%;animation-delay:4.4s"></div>
+      <div class="tongue" style="left:69%;width:18px;animation-delay:1.2s"></div>
+      <div class="drop s" style="left:69.6%;animation-delay:1.2s"></div>
+      <div class="tongue" style="left:88%;width:24px;animation-delay:3.3s"></div>
+      <div class="drop"   style="left:89%;animation-delay:3.3s"></div>
+    </div>
+    <div class="paintgloss"></div>
+    <div class="frame-body cover-body">
+      <div class="kicker">The DanManREAL Design System · Brand Wall</div>
+      <h1>DANMAN<span class="paint">REAL</span></h1>
+      <div class="saying">Hard <em>in the paint</em></div>
+      <p class="heritage">
+        Before the engines and the WebGPU worlds, every asset on this channel was drawn
+        pixel-by-pixel in <b>Microsoft Paint</b>. The paint never dried. It runs down every
+        frame on this site — <b>street-wet, jewel-lit, bronze-framed</b> — and this wall is
+        its law. Colors are measured from the real hero GLBs, never invented.
+      </p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ================= I. TOKENS ================= -->
+  <section id="tokens">
+    <div class="chapter-head fadeup">
+      <div class="kicker"><span class="num">I</span>The Ledger — measured color</div>
+      <h2>Every hex is <span class="tint-blue">pulled from</span> the <span class="tint-green">pixels.</span></h2>
+      <p class="lead">Source of truth: <span class="mono">frontend/BRAND_TOKENS.css</span> —
+      dominant-cluster measurements from <span class="mono">danmanreal-graffiti.glb</span> and the
+      three hero frames. The fades below are canon: paint facet into brand mid-tone into depth.</p>
+      <div class="rule"></div>
+    </div>
+    <div class="frame fadeup">
+      <span class="jewel tl"></span><span class="jewel tr"></span>
+      <span class="jewel bl"></span><span class="jewel br"></span>
+      <div class="paintline paint-green" aria-hidden="true">
+        <div class="bar"></div>
+        <div class="tongue" style="left:12%;animation-delay:.8s"></div>
+        <div class="drop"   style="left:13%;animation-delay:.8s"></div>
+        <div class="tongue" style="left:44%;width:20px;animation-delay:3s"></div>
+        <div class="drop s" style="left:44.7%;animation-delay:3s"></div>
+        <div class="tongue" style="left:78%;width:28px;animation-delay:5.2s"></div>
+        <div class="drop"   style="left:79.2%;animation-delay:5.2s"></div>
+      </div>
+      <div class="paintgloss"></div>
+      <div class="frame-body">
+        <div class="swatches">
+          <div class="swatch"><div class="fade f-bb"></div>
+            <div class="meta"><span class="hex">#12b7f8 → #197cc1</span><b>Blue Paint</b><span>wet drip facet → brand mid-tone</span></div></div>
+          <div class="swatch"><div class="fade f-gg"></div>
+            <div class="meta"><span class="hex">#26f296 → #1fb06f</span><b>Green Paint</b><span>wet drip facet → brand mid-tone</span></div></div>
+          <div class="swatch"><div class="fade f-jewel"></div>
+            <div class="meta"><span class="hex">#0cb6f8 → #156faa</span><b>The Jewel</b><span>corner light — the perfect fade</span></div></div>
+          <div class="swatch"><div class="fade f-metal"></div>
+            <div class="meta"><span class="hex">#b18b4e → #755934</span><b>Frame Bronze</b><span>veined metal over gunmetal</span></div></div>
+          <div class="swatch"><div class="fade f-abyss"></div>
+            <div class="meta"><span class="hex">#0d2a22 → #030c09</span><b>The Abyss</b><span>green-tinted near-black field</span></div></div>
+          <div class="swatch"><div class="fade f-street"></div>
+            <div class="meta"><span class="hex">#f04fb0 → #8b3df0</span><b>Street Accents</b><span>artistic leverage — use sparingly</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= II. THE PAINT ================= -->
+  <section id="paint">
+    <div class="chapter-head fadeup">
+      <div class="kicker"><span class="num">II</span>The Paint — liquid, never banner</div>
+      <h2>Caught <span class="tint-green">mid-drip,</span> every time.</h2>
+      <p class="lead">Paint on this site is <b>alive</b>: a tongue swells from the bar, necks,
+      and a droplet tears free — real liquid behavior, built from a gaussian-blur +
+      alpha-contrast goo filter fusing animated shapes into one wet body.</p>
+      <div class="rule"></div>
+    </div>
+    <div class="frame fadeup">
+      <span class="jewel tl"></span><span class="jewel tr"></span>
+      <span class="jewel bl"></span><span class="jewel br"></span>
+      <div class="frame-body">
+        <div class="paintlab">
+          <div class="paintline paint-blue" style="right:56%" aria-hidden="true">
+            <div class="bar"></div>
+            <div class="tongue" style="left:12%;animation-delay:.4s"></div>
+            <div class="drop"   style="left:14.4%;animation-delay:.4s"></div>
+            <div class="tongue" style="left:42%;width:34px;animation-delay:2.6s"></div>
+            <div class="drop"   style="left:45.4%;animation-delay:2.6s"></div>
+            <div class="tongue" style="left:76%;width:18px;animation-delay:5s"></div>
+            <div class="drop s" style="left:77.3%;animation-delay:5s"></div>
+          </div>
+          <div class="paintline paint-street" style="left:46%;right:28%" aria-hidden="true">
+            <div class="bar"></div>
+            <div class="tongue" style="left:22%;animation-delay:1.4s"></div>
+            <div class="drop"   style="left:26%;animation-delay:1.4s"></div>
+            <div class="tongue" style="left:62%;width:19px;animation-delay:3.8s"></div>
+            <div class="drop s" style="left:64%;animation-delay:3.8s"></div>
+          </div>
+          <div class="paintline paint-green" style="left:74%" aria-hidden="true">
+            <div class="bar"></div>
+            <div class="tongue" style="left:18%;animation-delay:2s"></div>
+            <div class="drop"   style="left:26%;animation-delay:2s"></div>
+            <div class="tongue" style="left:60%;width:22px;animation-delay:4.6s"></div>
+            <div class="drop"   style="left:66%;animation-delay:4.6s"></div>
+          </div>
+          <div class="label"><b>The Paint Lab</b><span>blue · street accents · green — one liquid law</span></div>
+        </div>
+        <div class="physics">
+          <div class="rulecard"><b>Swell.</b><p>A tongue grows from the bar on a slow ease — paint gathering weight, never a static banner.</p></div>
+          <div class="rulecard"><b>Neck.</b><p>The goo filter fuses drop and tongue while they touch; the join thins as they part — surface tension for free.</p></div>
+          <div class="rulecard"><b>Tear.</b><p>Past the goo radius the droplet snaps free and falls, fading out before it ever hits layout.</p></div>
+          <div class="rulecard"><b>Gloss.</b><p>A sharp highlight rides <i>outside</i> the filter so the wet edge stays crisp while the body stays gooey.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= III. THE FRAME ================= -->
+  <section id="frame">
+    <div class="chapter-head fadeup">
+      <div class="kicker"><span class="num">III</span>The Frame — the UI is a gallery</div>
+      <h2>Everything ships <span class="tint-blue">in a frame.</span></h2>
+      <p class="lead">No naked blocks. Every card, video, and panel hangs on the wall in
+      bronze-veined gunmetal with jewel-lit corners and paint running off the top edge —
+      the same frame family measured from the hero GLBs.</p>
+      <div class="rule"></div>
+    </div>
+    <div class="frame fadeup">
+      <span class="jewel tl"></span><span class="jewel tr"></span>
+      <span class="jewel bl"></span><span class="jewel br"></span>
+      <div class="paintline paint-blue" aria-hidden="true">
+        <div class="bar"></div>
+        <div class="tongue" style="left:31%;animation-delay:1.6s"></div>
+        <div class="drop"   style="left:32%;animation-delay:1.6s"></div>
+        <div class="tongue" style="left:60%;width:20px;animation-delay:4.2s"></div>
+        <div class="drop s" style="left:60.8%;animation-delay:4.2s"></div>
+      </div>
+      <div class="paintgloss"></div>
+      <div class="frame-body">
+        <div class="anatomy">
+          <div class="part">
+            <span class="chip" style="background:linear-gradient(150deg,#242b2a,#1d2322 60%,#151a19)"></span>
+            <h3>Gunmetal body</h3><p>Charcoal <span class="mono">#1d2322</span> plate — matte, heavy, gallery-grade.</p>
+          </div>
+          <div class="part">
+            <span class="chip" style="background:repeating-linear-gradient(112deg,#1d2322 0 7px,#755934 7px 9px,#1d2322 9px 18px)"></span>
+            <h3>Bronze veins</h3><p>Aged metal <span class="mono">#755934→#b18b4e</span> streaking through at two angles, plus a bezel line.</p>
+          </div>
+          <div class="part">
+            <span class="chip" style="background:radial-gradient(circle at 35% 30%,#d9f4ff,#0cb6f8 45%,#156faa 80%)"></span>
+            <h3>Jewel corners</h3><p>Four <span class="mono">#0cb6f8</span> stones breathing blue→green — the fade stays exactly as loved.</p>
+          </div>
+          <div class="part">
+            <span class="chip" style="background:linear-gradient(180deg,#12b7f8,#197cc1)"></span>
+            <h3>Paint off the top</h3><p>Every frame bleeds one paint color from its top rail. Blue leads, green answers, street accents guest.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= IV. THE VOICE ================= -->
+  <section id="voice">
+    <div class="chapter-head fadeup">
+      <div class="kicker"><span class="num">IV</span>The Voice — large or silent</div>
+      <h2>Type goes <span class="tint-green">big,</span> and stays <span class="tint-blue">readable.</span></h2>
+      <p class="lead">Display type is heavy and huge. Body copy never drops below a light
+      mint-white — deep grey on the abyss is outlawed. If a line matters, it gets size;
+      if it doesn't, it gets cut.</p>
+      <div class="rule"></div>
+    </div>
+    <div class="frame fadeup">
+      <span class="jewel tl"></span><span class="jewel tr"></span>
+      <span class="jewel bl"></span><span class="jewel br"></span>
+      <div class="paintline paint-green" aria-hidden="true">
+        <div class="bar"></div>
+        <div class="tongue" style="left:52%;animation-delay:.9s"></div>
+        <div class="drop"   style="left:53%;animation-delay:.9s"></div>
+      </div>
+      <div class="paintgloss"></div>
+      <div class="frame-body">
+        <div class="typespec">
+          <div class="row">
+            <div class="demo" style="font-family:var(--dmr-font-display);font-size:clamp(2.4rem,6vw,4.2rem);line-height:1">DISPLAY</div>
+            <div class="spec">Archivo Black / Arial Black · hero &amp; chapter heads · clamp(3.2–7rem) · tight leading</div>
+          </div>
+          <div class="row">
+            <div class="demo" style="font-weight:800;font-size:1.5rem;letter-spacing:.3em;text-transform:uppercase;color:var(--dmr-paint-green)">KICKER LINE</div>
+            <div class="spec">Inter 800 · .34em tracking · paint-green, numeral in paint-blue</div>
+          </div>
+          <div class="row">
+            <div class="demo" style="font-size:1.18rem;color:var(--dmr-ink-soft)">Body reads like this — mint-soft, 1.7 leading, never grey mud.</div>
+            <div class="spec">Inter/system · 17px base · <span class="mono">#cdeede</span> floor for secondary text</div>
+          </div>
+          <div class="row">
+            <div class="demo mono" style="font-size:1.05rem">--dmr-paint-blue: #12b7f8;</div>
+            <div class="spec">Mono for tokens &amp; code · paint-blue ink</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= V. THE MOVES ================= -->
+  <section id="moves">
+    <div class="chapter-head fadeup">
+      <div class="kicker"><span class="num">V</span>The Moves — components in costume</div>
+      <h2>Same paint, <span class="tint-blue">every surface.</span></h2>
+      <div class="rule"></div>
+    </div>
+    <div class="frame fadeup">
+      <span class="jewel tl"></span><span class="jewel tr"></span>
+      <span class="jewel bl"></span><span class="jewel br"></span>
+      <div class="paintline paint-blue" aria-hidden="true">
+        <div class="bar"></div>
+        <div class="tongue" style="left:14%;animation-delay:2.4s"></div>
+        <div class="drop s" style="left:14.8%;animation-delay:2.4s"></div>
+        <div class="tongue" style="left:81%;width:21px;animation-delay:.6s"></div>
+        <div class="drop"   style="left:81.9%;animation-delay:.6s"></div>
+      </div>
+      <div class="paintgloss"></div>
+      <div class="frame-body">
+        <div class="moves">
+          <div class="move">
+            <a class="cta" href="#tokens">ENTER THE WORLD</a>
+            <p>CTA — the 135° blue→green pour, ink <span class="mono">#eafcf4</span>, lifts on hover.</p>
+          </div>
+          <div class="move">
+            <div class="loadingdemo"><span class="pulse"></span></div>
+            <p>Loading — radial paint-glow <span class="mono">#0d2a22→#030c09</span> with a breathing jewel.</p>
+          </div>
+          <div class="move">
+            <div class="videodemo"><span>framed media</span></div>
+            <p>Video &amp; GLB panels hang in the bronze frame like everything else — no naked media.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VI. THE LAW ================= -->
+  <section id="law">
+    <div class="chapter-head fadeup">
+      <div class="kicker"><span class="num">VI</span>The Law — how the wall is used</div>
+      <h2>Do it <span class="tint-green">wet,</span> or don't <span class="tint-blue">do it.</span></h2>
+      <div class="rule"></div>
+    </div>
+    <div class="frame fadeup">
+      <span class="jewel tl"></span><span class="jewel tr"></span>
+      <span class="jewel bl"></span><span class="jewel br"></span>
+      <div class="paintline paint-green" aria-hidden="true">
+        <div class="bar"></div>
+        <div class="tongue" style="left:38%;animation-delay:1.8s"></div>
+        <div class="drop"   style="left:39%;animation-delay:1.8s"></div>
+      </div>
+      <div class="paintgloss"></div>
+      <div class="frame-body">
+        <div class="law">
+          <div class="col do">
+            <h3 class="do-h">ALWAYS</h3>
+            <ul>
+              <li>Measure color from the GLB assets — <span class="mono">BRAND_TOKENS.css</span> is the only palette.</li>
+              <li>Frame every block: gunmetal + bronze veins + jewel corners.</li>
+              <li>Keep paint liquid — goo-filtered, mid-drip, gloss on top.</li>
+              <li>Go LARGE with display type; keep body text mint-bright.</li>
+              <li>Give chapters air — one idea per frame, generous space between.</li>
+              <li>Blue leads, green answers; purple/pink only as street accents.</li>
+            </ul>
+          </div>
+          <div class="col dont">
+            <h3 class="dont-h">NEVER</h3>
+            <ul>
+              <li>Invent hex values or drift back to old CSS colors.</li>
+              <li>Ship a naked, frameless block — this UI is a gallery wall.</li>
+              <li>Draw paint as flat static banners or hard-edged bars.</li>
+              <li>Set body copy in deep grey on the abyss.</li>
+              <li>Cram sections together — crowding kills the wall.</li>
+              <li>Let decoration own the content — frames serve, media plays.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================= EPILOGUE ================= -->
+<footer class="epilogue">
+  <div class="wrap fadeup">
+    <div class="sig">"Hard in the paint since MS Paint."</div>
+    <div class="fine">DANMANREAL DESIGN · brand wall v2 · colors measured from danmanreal-graffiti.glb · Fable × DanManREAL</div>
+  </div>
+</footer>
+
+<script>
+// staged, confident entrances — FABLES-style
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('in'), (i%3)*120);
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.12});
+document.querySelectorAll('.fadeup').forEach(el=>io.observe(el));
+if (matchMedia('(prefers-reduced-motion: reduce)').matches){
+  document.querySelectorAll('.fadeup').forEach(el=>el.classList.add('in'));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# FABLES_INFLUENCE is a template kit — nothing generated belongs in it.
+FABLES_HARNESS/
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+.env
+.env.*

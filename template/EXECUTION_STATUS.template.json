@@ -1,0 +1,53 @@
+{
+  "schema_version": "fables-influence-1.0",
+  "project_name": "{{PROJECT_NAME}}",
+  "harness_root": "FABLES_HARNESS",
+  "generated_at": "{{GENERATED_AT}}",
+  "updated_at": "{{GENERATED_AT}}",
+  "updated_by": "{{GENERATED_BY}}",
+  "update_protocol": {
+    "rules": [
+      "This file is the ONLY status truth. Summaries, chat claims, and the HTML never override it.",
+      "Update after EVERY block: set the block's status, record evidence, recompute current_next_block, bump updated_at/updated_by.",
+      "A block is complete ONLY when its artifacts exist on disk AND are recorded in ledgers/FABLE_EVIDENCE_INDEX.md.",
+      "Never resolve an {{OWNER:*}} placeholder yourself — record it in blocked_on_owner and ledgers/FABLE_OWNER_DECISIONS.md, set the block status to blocked_on_owner, and stop that block.",
+      "After updating, run: python3 FABLES_HARNESS/verify_bundle.py — it must exit 0 before the session ends.",
+      "If a session dies mid-block, the block stays in_progress; the next session reads ledgers/FABLE_REENTRY_NOTE.md before touching anything."
+    ],
+    "status_vocabulary": {
+      "not_started": "No work attempted.",
+      "in_progress": "Started, not evidence-complete. Also the crash-recovery state.",
+      "complete": "Executed this run; evidence recorded.",
+      "complete_static": "Verified already done during the survey; evidence recorded.",
+      "skipped_superseded": "Owner-approved skip; reason recorded in FABLE_OWNER_DECISIONS.md.",
+      "blocked_on_owner": "Waiting on an {{OWNER:*}} value or an OWNER GATE decision."
+    }
+  },
+  "current_state": {
+    "current_next_block": {
+      "html_id": "{{NEXT_BLOCK_HTML_ID}}",
+      "text_sha256": "{{NEXT_BLOCK_SHA256}}"
+    },
+    "blocked_on_owner": [
+      {
+        "placeholder": "{{EXAMPLE_ROW_replace_with_real_OWNER_entries_or_leave_list_empty}}",
+        "blocks": ["block-NN"],
+        "question_for_owner": "<one sentence>"
+      }
+    ],
+    "notes": ""
+  },
+  "blocks": [
+    {
+      "html_id": "block-01",
+      "workflow_label": "01",
+      "section_heading": "{{SECTION}}",
+      "role": "fable_builder",
+      "status": "not_started",
+      "text_sha256": "{{SHA256_FROM_PLAYBOOK}}",
+      "evidence": null,
+      "completed_at": null,
+      "completed_by": null
+    }
+  ]
+}
