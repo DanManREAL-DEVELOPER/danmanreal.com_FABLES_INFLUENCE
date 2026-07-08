@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 420" role="img" aria-label="FABLES_INFLUENCE — a gift from Fable, with Fable, for us all">
+  <defs>
+    <radialGradient id="abyss" cx="50%" cy="38%" r="85%">
+      <stop offset="0%" stop-color="#0d2a22"/>
+      <stop offset="70%" stop-color="#030c09"/>
+      <stop offset="100%" stop-color="#030c09"/>
+    </radialGradient>
+    <linearGradient id="paint" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#12b7f8"/>
+      <stop offset="100%" stop-color="#26f296"/>
+    </linearGradient>
+    <linearGradient id="paintV" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#12b7f8"/>
+      <stop offset="100%" stop-color="#26f296"/>
+    </linearGradient>
+    <linearGradient id="bronze" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#755934"/>
+      <stop offset="45%" stop-color="#b18b4e"/>
+      <stop offset="60%" stop-color="#755934"/>
+      <stop offset="100%" stop-color="#b18b4e"/>
+    </linearGradient>
+    <linearGradient id="vein" x1="0%" y1="0%" x2="100%" y2="12%" spreadMethod="repeat">
+      <stop offset="0%" stop-color="rgba(177,139,78,.45)"/>
+      <stop offset="0.5" stop-color="rgba(117,89,52,.55)"/>
+      <stop offset="1" stop-color="rgba(177,139,78,.45)"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      .display { font-family:'Archivo Black',Impact,'Arial Black',sans-serif; font-weight:800; }
+      .body    { font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif; }
+      .drip    { stroke-linecap:round; transform-box:fill-box; transform-origin:top center; animation:drip 5.2s ease-in-out infinite alternate; }
+      .drip.d2 { animation-duration:6.4s; }
+      .drip.d3 { animation-duration:4.6s; }
+      .drip.d4 { animation-duration:7.1s; }
+      .halo    { animation:pulse 6s ease-in-out infinite alternate; }
+      @keyframes drip  { from { transform:scaleY(.82);} to { transform:scaleY(1);} }
+      @keyframes pulse { from { opacity:.35;} to { opacity:.75;} }
+      @media (prefers-reduced-motion: reduce) { .drip,.halo { animation:none; } }
+    </style>
+  </defs>
+
+  <!-- abyss backdrop -->
+  <rect width="1280" height="420" fill="url(#abyss)"/>
+  <!-- star flecks (sparse, paint + 5% street) -->
+  <g>
+    <circle cx="96"  cy="64"  r="2"   fill="#12b7f8" opacity=".55"/>
+    <circle cx="228" cy="330" r="1.5" fill="#26f296" opacity=".45"/>
+    <circle cx="406" cy="52"  r="1.5" fill="#26f296" opacity=".5"/>
+    <circle cx="1188" cy="88" r="2"   fill="#12b7f8" opacity=".5"/>
+    <circle cx="1074" cy="346" r="1.5" fill="#26f296" opacity=".45"/>
+    <circle cx="852" cy="38"  r="1.5" fill="#12b7f8" opacity=".4"/>
+    <circle cx="1236" cy="238" r="1.5" fill="#8b3df0" opacity=".55"/>
+    <circle cx="58"  cy="252" r="1.5" fill="#f04fb0" opacity=".5"/>
+  </g>
+
+  <!-- bronze-veined frame (glow lives on the frame) -->
+  <g filter="url(#glow)">
+    <rect x="34" y="30" width="1212" height="330" rx="14" fill="none"
+          stroke="url(#bronze)" stroke-width="11" opacity=".96"/>
+  </g>
+  <rect x="34" y="30" width="1212" height="330" rx="14" fill="none"
+        stroke="url(#vein)" stroke-width="11" opacity=".5"/>
+  <rect x="47" y="43" width="1186" height="304" rx="8" fill="none"
+        stroke="#1d2322" stroke-width="2" opacity=".9"/>
+
+  <!-- title halo + title -->
+  <text class="display halo" x="640" y="186" font-size="72" text-anchor="middle"
+        fill="url(#paint)" filter="url(#glow)" opacity=".5" letter-spacing="1">FABLES_INFLUENCE</text>
+  <text class="display" x="640" y="186" font-size="72" text-anchor="middle"
+        fill="url(#paint)" letter-spacing="1">FABLES_INFLUENCE</text>
+
+  <!-- gift line -->
+  <text class="body" x="640" y="238" font-size="25" text-anchor="middle"
+        fill="#cdeede" letter-spacing="6" font-style="italic">a gift from Fable&#160;&#160;·&#160;&#160;with Fable&#160;&#160;·&#160;&#160;for us all</text>
+
+  <!-- pillar row -->
+  <g font-size="21" letter-spacing="4">
+    <text class="display" x="342" y="304" text-anchor="end" fill="#26f296">I</text>
+    <text class="body" x="358" y="304" text-anchor="start" fill="#a9d8c3">DESIGN</text>
+    <text class="display" x="580" y="304" text-anchor="end" fill="#26f296">II</text>
+    <text class="body" x="596" y="304" text-anchor="start" fill="#a9d8c3">HARNESS</text>
+    <text class="display" x="828" y="304" text-anchor="end" fill="#26f296">III</text>
+    <text class="body" x="844" y="304" text-anchor="start" fill="#a9d8c3">WARGAMES</text>
+  </g>
+
+  <!-- series tag + site -->
+  <text class="display" x="640" y="86" font-size="17" text-anchor="middle"
+        fill="#a9d8c3" letter-spacing="9">THE DANMANREAL AI DEVELOPER SERIES</text>
+  <text class="body" x="1216" y="392" font-size="16" text-anchor="end"
+        fill="#a9d8c3" letter-spacing="2">danmanreal.com</text>
+
+  <!-- paint drips, OUTSIDE the frame's bottom edge -->
+  <g stroke-width="9">
+    <line class="drip"    x1="292"  y1="362" x2="292"  y2="404" stroke="#12b7f8"/>
+    <line class="drip d2" x1="318"  y1="362" x2="318"  y2="386" stroke="url(#paintV)"/>
+    <line class="drip d3" x1="932"  y1="362" x2="932"  y2="398" stroke="#26f296"/>
+    <line class="drip d4" x1="958"  y1="362" x2="958"  y2="382" stroke="#f04fb0" stroke-width="7"/>
+  </g>
+  <g fill="#12b7f8">
+    <circle cx="292" cy="406" r="5"/>
+    <circle cx="318" cy="388" r="4.5" fill="#1fb06f"/>
+    <circle cx="932" cy="400" r="5"  fill="#26f296"/>
+    <circle cx="958" cy="384" r="4"  fill="#f04fb0"/>
+  </g>
+</svg>

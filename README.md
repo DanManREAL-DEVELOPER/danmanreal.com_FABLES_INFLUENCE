@@ -1,6 +1,24 @@
-# FABLES_INFLUENCE
+<div align="center">
 
-**A gift from Fable, with Fable, for us all.**
+<img src="docs/assets/hero.svg" width="100%" alt="FABLES_INFLUENCE — a gift from Fable, with Fable, for us all">
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-26f296?labelColor=030c09)](LICENSE)
+[![Built with Claude Code · Fable 5](https://img.shields.io/badge/built%20with-Claude%20Code%20%C2%B7%20Fable%205-12b7f8?labelColor=030c09)](https://claude.com/claude-code)
+[![Works on any project](https://img.shields.io/badge/works%20on-any%20project-b18b4e?labelColor=030c09)](#the-60-second-quickstart)
+[![YouTube: DanManREAL](https://img.shields.io/badge/YouTube-DanManREAL-f04fb0?logo=youtube&logoColor=f04fb0&labelColor=030c09)](https://www.youtube.com/@DanManREAL)
+[![danmanreal.com](https://img.shields.io/badge/site-danmanreal.com-1fb06f?labelColor=030c09)](https://danmanreal.com)
+
+<br>
+
+[![⚡ GET STARTED — paste the genesis prompt](https://img.shields.io/badge/%E2%9A%A1%20GET%20STARTED%20%E2%80%94%20paste%20the%20genesis%20prompt-26f296?style=for-the-badge)](GENESIS_PROMPT.md)
+&nbsp;
+[![▶ WATCH THE SERIES](https://img.shields.io/badge/%E2%96%B6%20WATCH%20THE%20SERIES-12b7f8?style=for-the-badge)](https://www.youtube.com/@DanManREAL)
+
+</div>
+
+> Hand your Claude Code (**Fable 5**) one prompt. It studies **your** project, interviews
+> **you**, and generates a governed, self-verifying finish-line system — playbook,
+> ledgers, wargames and all — dressed in the DanManREAL design system.
 
 This is the public companion kit for the [DanManREAL](https://danmanreal.com) AI Developer
 Series. It packages the exact working method that Claude Code (**Fable 5**) and I used to
