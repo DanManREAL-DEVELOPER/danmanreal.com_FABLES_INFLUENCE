@@ -82,6 +82,7 @@ Three ideas, learned the hard way, that compose into one system:
 MIT — see [`LICENSE`](LICENSE). The **DanManREAL** name, logo, and brand identity are not
 licensed for use as your own branding; the design system is offered so you can build
 beautiful things with it, not to impersonate DanManREAL.
+Add me on Discord, If you wanna promote it I'll have no problem with it, if its respectful. 
 
 ---
 
