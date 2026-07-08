@@ -7,6 +7,7 @@
 [![Works on any project](https://img.shields.io/badge/works%20on-any%20project-b18b4e?labelColor=030c09)](#the-60-second-quickstart)
 [![YouTube: DanManREAL](https://img.shields.io/badge/YouTube-DanManREAL-f04fb0?logo=youtube&logoColor=f04fb0&labelColor=030c09)](https://www.youtube.com/@DanManREAL)
 [![danmanreal.com](https://img.shields.io/badge/site-danmanreal.com-1fb06f?labelColor=030c09)](https://danmanreal.com)
+[![Discord](https://img.shields.io/badge/Discord-join%20us-8b3df0?logo=discord&logoColor=8b3df0&labelColor=030c09)](https://discord.gg/5KhQ8jeaTH)
 
 <br>
 
@@ -100,7 +101,12 @@ Three ideas, learned the hard way, that compose into one system:
 MIT — see [`LICENSE`](LICENSE). The **DanManREAL** name, logo, and brand identity are not
 licensed for use as your own branding; the design system is offered so you can build
 beautiful things with it, not to impersonate DanManREAL.
-Add me on Discord, If you wanna promote it I'll have no problem with it, if its respectful. 
+
+## Community
+
+**[Join the Discord →](https://discord.gg/5KhQ8jeaTH)** — come show what your Fable built
+with this kit. Want to promote it or feature it in your own content? I'll have no problem
+with it, as long as it's respectful.
 
 ---
 
