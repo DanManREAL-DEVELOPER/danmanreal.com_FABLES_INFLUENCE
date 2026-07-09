@@ -1,0 +1,1873 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FABLES_INFLUENCE Classroom Walkthrough</title>
+  <meta name="description" content="An interactive DanManREAL DESIGN Three.js WebGPU classroom walkthrough of the FABLES_INFLUENCE project for 10-year-old students.">
+  <style>
+    :root {
+      --dmr-brand-blue: #197cc1;
+      --dmr-brand-green: #1fb06f;
+      --dmr-paint-blue: #12b7f8;
+      --dmr-paint-green: #26f296;
+      --dmr-frame-metal: #755934;
+      --dmr-frame-metal-bright: #b18b4e;
+      --dmr-jewel-blue: #0cb6f8;
+      --dmr-jewel-depth: #156faa;
+      --dmr-bg-abyss: #030c09;
+      --dmr-frame-charcoal: #1d2322;
+      --dmr-font-display: "Archivo Black", "Arial Black", Impact, sans-serif;
+      --dmr-font-body: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mint: #cdeede;
+      --ink: #f6fff8;
+      --pink: #f04fb0;
+      --purple: #8b3df0;
+      --warning: #ffd166;
+      --danger: #ff6b6b;
+      --panel: rgba(9, 23, 18, 0.91);
+      --panel-strong: rgba(29, 35, 34, 0.97);
+      --line: rgba(177, 139, 78, 0.55);
+      --shadow: 0 26px 70px rgba(0, 0, 0, 0.42);
+      color-scheme: dark;
+      font-family: var(--dmr-font-body);
+      background: var(--dmr-bg-abyss);
+      color: var(--mint);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--dmr-bg-abyss);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, rgba(3, 12, 9, 0.82), rgba(3, 12, 9, 0.96) 44%, #020705),
+        radial-gradient(circle at 18% 12%, rgba(18, 183, 248, 0.14), transparent 30%),
+        radial-gradient(circle at 82% 8%, rgba(38, 242, 150, 0.12), transparent 28%),
+        linear-gradient(135deg, #030c09, #061811 56%, #030c09);
+      overflow-x: hidden;
+      letter-spacing: 0;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: var(--dmr-paint-blue);
+      text-decoration-color: rgba(18, 183, 248, 0.45);
+    }
+
+    .grain {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      opacity: 0.045;
+      mix-blend-mode: screen;
+      background-image:
+        linear-gradient(0deg, transparent 0, rgba(255, 255, 255, 0.42) 1px, transparent 2px),
+        linear-gradient(90deg, transparent 0, rgba(255, 255, 255, 0.28) 1px, transparent 2px);
+      background-size: 7px 9px, 11px 13px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 0.85rem clamp(1rem, 3vw, 2.5rem);
+      background: rgba(3, 12, 9, 0.9);
+      border-bottom: 1px solid rgba(177, 139, 78, 0.55);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 48px;
+      aspect-ratio: 1;
+      flex: 0 0 auto;
+      border: 2px solid var(--dmr-frame-metal-bright);
+      background:
+        linear-gradient(145deg, rgba(18, 183, 248, 0.28), transparent 48%),
+        linear-gradient(315deg, rgba(38, 242, 150, 0.22), transparent 50%),
+        #07120e;
+      box-shadow: inset 0 0 0 3px rgba(29, 35, 34, 0.92), 0 0 24px rgba(12, 182, 248, 0.25);
+      position: relative;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, var(--dmr-jewel-blue), var(--dmr-jewel-depth));
+      box-shadow: 0 0 18px rgba(12, 182, 248, 0.9);
+    }
+
+    .brand-mark::before {
+      top: -6px;
+      left: -6px;
+    }
+
+    .brand-mark::after {
+      right: -6px;
+      bottom: -6px;
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-family: var(--dmr-font-display);
+      color: var(--ink);
+      font-size: clamp(0.96rem, 1.7vw, 1.45rem);
+      line-height: 0.96;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .brand-text span {
+      display: block;
+      margin-top: 0.16rem;
+      color: var(--mint);
+      font-size: 0.84rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .jump-button,
+    .small-chip,
+    .ghost-button,
+    .stage-button,
+    .question-chip,
+    .file-card,
+    .use-card,
+    .term-card,
+    .lesson-step,
+    .generated-card,
+    .source-pill {
+      min-height: 44px;
+      border: 1px solid rgba(177, 139, 78, 0.52);
+      color: var(--mint);
+      background:
+        linear-gradient(145deg, rgba(29, 35, 34, 0.92), rgba(5, 17, 12, 0.92)),
+        linear-gradient(90deg, rgba(18, 183, 248, 0.16), rgba(38, 242, 150, 0.08));
+      box-shadow: inset 0 0 0 1px rgba(205, 238, 222, 0.04);
+    }
+
+    .jump-button,
+    .small-chip,
+    .ghost-button {
+      border-radius: 0;
+      padding: 0.55rem 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0;
+    }
+
+    .jump-button:focus-visible,
+    .small-chip:focus-visible,
+    .ghost-button:focus-visible,
+    .stage-button:focus-visible,
+    .question-chip:focus-visible,
+    .file-card:focus-visible,
+    .use-card:focus-visible,
+    .term-card:focus-visible,
+    .lesson-step:focus-visible,
+    .generated-card:focus-visible,
+    .source-pill:focus-visible,
+    input:focus-visible {
+      outline: 3px solid var(--dmr-paint-green);
+      outline-offset: 3px;
+    }
+
+    .hero {
+      min-height: 74vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: clamp(1rem, 3vw, 2rem);
+      align-items: end;
+      padding: clamp(2rem, 7vh, 5rem) clamp(1rem, 3vw, 2.5rem) 2rem;
+      position: relative;
+    }
+
+    .hero-copy {
+      z-index: 2;
+      padding-bottom: clamp(1rem, 4vh, 3rem);
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: 34px;
+      padding: 0.28rem 0.55rem;
+      border-left: 5px solid var(--dmr-paint-green);
+      color: var(--dmr-paint-green);
+      background: rgba(3, 12, 9, 0.68);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--dmr-font-display);
+      color: var(--ink);
+      letter-spacing: 0;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    h1 {
+      margin-top: 1rem;
+      max-width: 12ch;
+      font-size: clamp(3rem, 8vw, 7.4rem);
+      line-height: 0.82;
+      text-shadow: 0 18px 38px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero-copy p {
+      max-width: 64ch;
+      font-size: clamp(1rem, 2vw, 1.36rem);
+      line-height: 1.55;
+      color: var(--mint);
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+      max-width: 780px;
+    }
+
+    .meta-tile {
+      padding: 0.8rem;
+      min-height: 88px;
+      border-left: 4px solid var(--dmr-paint-blue);
+      background: rgba(3, 12, 9, 0.68);
+    }
+
+    .meta-tile strong {
+      display: block;
+      color: var(--ink);
+      font-weight: 900;
+      font-size: 1rem;
+    }
+
+    .meta-tile span {
+      display: block;
+      margin-top: 0.32rem;
+      color: var(--mint);
+      font-size: 0.88rem;
+      line-height: 1.35;
+    }
+
+    .hero-poster {
+      align-self: stretch;
+      min-height: 420px;
+      position: relative;
+      display: flex;
+      align-items: stretch;
+    }
+
+    .hero-poster .metal-frame {
+      width: 100%;
+      display: grid;
+      align-content: end;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(3, 12, 9, 0.08), rgba(3, 12, 9, 0.94)),
+        url("docs/assets/hero.svg") center / cover no-repeat,
+        #07120e;
+    }
+
+    .poster-caption {
+      position: relative;
+      z-index: 2;
+      padding: 1rem;
+      background: linear-gradient(180deg, transparent, rgba(3, 12, 9, 0.88));
+    }
+
+    .poster-caption strong {
+      display: block;
+      font-family: var(--dmr-font-display);
+      color: var(--ink);
+      font-size: clamp(1.4rem, 3vw, 2.4rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    .poster-caption span {
+      display: block;
+      margin-top: 0.55rem;
+      color: var(--mint);
+      line-height: 1.42;
+    }
+
+    .metal-frame {
+      position: relative;
+      border: 2px solid var(--dmr-frame-metal);
+      background:
+        linear-gradient(145deg, rgba(29, 35, 34, 0.97), rgba(5, 17, 12, 0.95)),
+        repeating-linear-gradient(112deg, rgba(177, 139, 78, 0.12) 0 2px, transparent 2px 18px);
+      box-shadow: var(--shadow), inset 0 0 0 1px rgba(177, 139, 78, 0.34);
+    }
+
+    .metal-frame::before {
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      inset: 7px;
+      border: 1px solid rgba(177, 139, 78, 0.5);
+      box-shadow:
+        inset 0 0 26px rgba(18, 183, 248, 0.05),
+        inset 0 0 40px rgba(38, 242, 150, 0.04);
+      z-index: 1;
+    }
+
+    .metal-frame > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .jewel {
+      position: absolute;
+      width: 17px;
+      height: 17px;
+      background: linear-gradient(135deg, var(--dmr-jewel-blue), var(--dmr-jewel-depth));
+      box-shadow: 0 0 24px rgba(12, 182, 248, 0.75);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .jewel.tl {
+      top: -9px;
+      left: -9px;
+    }
+
+    .jewel.tr {
+      top: -9px;
+      right: -9px;
+    }
+
+    .jewel.bl {
+      bottom: -9px;
+      left: -9px;
+    }
+
+    .jewel.br {
+      right: -9px;
+      bottom: -9px;
+    }
+
+    .paint-rail {
+      pointer-events: none;
+      position: absolute;
+      top: -13px;
+      left: 26px;
+      right: 26px;
+      height: 34px;
+      filter: url("#dmr-goo");
+      z-index: 4;
+    }
+
+    .paint-rail span {
+      position: absolute;
+      top: 4px;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--dmr-paint-blue), var(--dmr-brand-blue));
+      box-shadow: 0 0 20px rgba(18, 183, 248, 0.34);
+      animation: paintPulse 4s ease-in-out infinite;
+    }
+
+    .paint-rail span:nth-child(1) {
+      left: 0;
+      width: 34%;
+    }
+
+    .paint-rail span:nth-child(2) {
+      left: 28%;
+      width: 22%;
+      height: 20px;
+      background: linear-gradient(180deg, var(--dmr-paint-green), var(--dmr-brand-green));
+      animation-delay: -1.2s;
+    }
+
+    .paint-rail span:nth-child(3) {
+      left: 52%;
+      width: 24%;
+      height: 16px;
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      animation-delay: -2.1s;
+    }
+
+    .paint-rail span:nth-child(4) {
+      right: 0;
+      width: 30%;
+      height: 13px;
+      background: linear-gradient(90deg, var(--dmr-paint-blue), var(--dmr-paint-green));
+      animation-delay: -0.6s;
+    }
+
+    .paint-rail i {
+      position: absolute;
+      top: 10px;
+      width: 12px;
+      height: 34px;
+      border-radius: 999px;
+      background: var(--dmr-paint-blue);
+      animation: drip 3.8s ease-in-out infinite;
+    }
+
+    .paint-rail i:nth-of-type(1) {
+      left: 13%;
+      background: var(--dmr-paint-blue);
+      height: 42px;
+    }
+
+    .paint-rail i:nth-of-type(2) {
+      left: 42%;
+      background: var(--dmr-paint-green);
+      height: 30px;
+      animation-delay: -1.1s;
+    }
+
+    .paint-rail i:nth-of-type(3) {
+      right: 18%;
+      background: var(--pink);
+      height: 36px;
+      animation-delay: -2s;
+    }
+
+    @keyframes drip {
+      0%, 100% { transform: translateY(0) scaleY(0.88); }
+      50% { transform: translateY(9px) scaleY(1.16); }
+    }
+
+    @keyframes paintPulse {
+      0%, 100% { transform: scaleX(0.96); opacity: 0.88; }
+      50% { transform: scaleX(1.03); opacity: 1; }
+    }
+
+    .section {
+      padding: clamp(2rem, 6vw, 5rem) clamp(1rem, 3vw, 2.5rem);
+    }
+
+    .section-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1rem;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(2rem, 5vw, 5.2rem);
+      line-height: 0.86;
+      max-width: 13ch;
+    }
+
+    .section-heading p {
+      max-width: 62ch;
+      margin: 0.75rem 0 0;
+      line-height: 1.55;
+      color: var(--mint);
+    }
+
+    .stage-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.22fr) minmax(340px, 0.78fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .webgpu-stage {
+      min-height: clamp(520px, 70vh, 760px);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: 1fr auto;
+    }
+
+    #webgpuScene {
+      min-height: 440px;
+      position: relative;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(18, 183, 248, 0.12), transparent 38%),
+        radial-gradient(circle at 52% 55%, rgba(38, 242, 150, 0.1), transparent 44%),
+        #030c09;
+    }
+
+    #webgpuScene canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .scene-fallback,
+    .scene-labels {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      pointer-events: none;
+    }
+
+    .scene-fallback {
+      text-align: center;
+      color: var(--mint);
+      background:
+        radial-gradient(circle at 50% 46%, rgba(18, 183, 248, 0.18), transparent 35%),
+        rgba(3, 12, 9, 0.4);
+    }
+
+    .scene-fallback strong {
+      display: block;
+      font-family: var(--dmr-font-display);
+      color: var(--ink);
+      font-size: clamp(1.7rem, 4vw, 3.4rem);
+      text-transform: uppercase;
+      line-height: 0.92;
+    }
+
+    .scene-hud {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.7rem;
+      padding: 1rem;
+      border-top: 1px solid rgba(177, 139, 78, 0.45);
+      background: rgba(3, 12, 9, 0.76);
+    }
+
+    .hud-tile {
+      min-height: 74px;
+      padding: 0.72rem;
+      border-left: 4px solid var(--dmr-paint-green);
+      background: rgba(5, 17, 12, 0.76);
+      cursor: pointer;
+    }
+
+    .hud-tile strong {
+      display: block;
+      color: var(--ink);
+      font-weight: 900;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+    }
+
+    .hud-tile span {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--mint);
+      font-size: 0.84rem;
+      line-height: 1.33;
+    }
+
+    .answer-console {
+      min-height: 520px;
+      padding: 1.1rem;
+      display: grid;
+      align-content: start;
+      gap: 0.9rem;
+    }
+
+    .answer-console h2 {
+      font-size: clamp(1.7rem, 3vw, 3.2rem);
+      line-height: 0.88;
+    }
+
+    .answer-kicker {
+      color: var(--dmr-paint-green);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 0.76rem;
+    }
+
+    .answer-body {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .answer-block {
+      padding: 0.84rem;
+      background: rgba(3, 12, 9, 0.68);
+      border-left: 5px solid var(--dmr-paint-blue);
+    }
+
+    .answer-block strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 0.32rem;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+    }
+
+    .answer-block p {
+      margin: 0;
+      color: var(--mint);
+      line-height: 1.48;
+    }
+
+    .source-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .source-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0.26rem 0.48rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.76rem;
+      color: var(--ink);
+    }
+
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.72rem;
+    }
+
+    .stage-button {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.65rem;
+      align-items: start;
+      min-height: 116px;
+      padding: 0.75rem;
+      text-align: left;
+      border-radius: 0;
+    }
+
+    .stage-button.is-active {
+      border-color: var(--dmr-paint-green);
+      box-shadow:
+        inset 0 0 0 1px rgba(38, 242, 150, 0.45),
+        0 0 24px rgba(38, 242, 150, 0.16);
+    }
+
+    .stage-index {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      aspect-ratio: 1;
+      font-family: var(--dmr-font-display);
+      color: #04100b;
+      background: linear-gradient(135deg, var(--dmr-paint-green), var(--dmr-paint-blue));
+      font-size: 0.95rem;
+    }
+
+    .stage-button strong {
+      display: block;
+      color: var(--ink);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.05;
+      font-size: 0.9rem;
+    }
+
+    .stage-button span {
+      display: block;
+      margin-top: 0.35rem;
+      color: var(--mint);
+      line-height: 1.3;
+      font-size: 0.82rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .file-card,
+    .use-card,
+    .term-card,
+    .generated-card,
+    .lesson-step {
+      position: relative;
+      display: block;
+      width: 100%;
+      min-height: 142px;
+      padding: 0.9rem;
+      text-align: left;
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    .file-card::after,
+    .use-card::after,
+    .term-card::after,
+    .generated-card::after,
+    .lesson-step::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--dmr-paint-blue), var(--dmr-paint-green), var(--pink));
+    }
+
+    .card-label {
+      color: var(--dmr-paint-green);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .file-card strong,
+    .use-card strong,
+    .term-card strong,
+    .generated-card strong,
+    .lesson-step strong {
+      display: block;
+      margin-top: 0.36rem;
+      color: var(--ink);
+      font-weight: 900;
+      font-size: 1rem;
+      line-height: 1.1;
+    }
+
+    .file-card span,
+    .use-card span,
+    .term-card span,
+    .generated-card span,
+    .lesson-step span {
+      display: block;
+      margin-top: 0.48rem;
+      color: var(--mint);
+      line-height: 1.38;
+      font-size: 0.88rem;
+    }
+
+    .generated-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+
+    .lesson-board {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: 1rem;
+    }
+
+    .lesson-list {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .lesson-step {
+      min-height: 102px;
+    }
+
+    .teacher-script {
+      padding: 1rem;
+    }
+
+    .teacher-script h3 {
+      font-size: clamp(1.4rem, 2.8vw, 2.6rem);
+      line-height: 0.92;
+    }
+
+    .script-lines {
+      display: grid;
+      gap: 0.72rem;
+      margin-top: 0.9rem;
+    }
+
+    .script-line {
+      padding: 0.85rem;
+      background: rgba(3, 12, 9, 0.7);
+      border-left: 5px solid var(--dmr-paint-blue);
+      line-height: 1.48;
+      cursor: pointer;
+    }
+
+    .question-lab {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.32fr) minmax(0, 0.68fr);
+      gap: 1rem;
+    }
+
+    .question-controls {
+      padding: 1rem;
+      align-self: start;
+    }
+
+    .question-controls label {
+      display: block;
+      color: var(--ink);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .question-controls input {
+      width: 100%;
+      min-height: 48px;
+      padding: 0.75rem;
+      border: 1px solid rgba(177, 139, 78, 0.65);
+      background: rgba(3, 12, 9, 0.92);
+      color: var(--ink);
+      border-radius: 0;
+    }
+
+    .topic-list {
+      display: grid;
+      gap: 0.45rem;
+      margin-top: 0.8rem;
+    }
+
+    .small-chip.is-active {
+      border-color: var(--dmr-paint-green);
+      color: var(--ink);
+      box-shadow: 0 0 18px rgba(38, 242, 150, 0.14);
+    }
+
+    .question-bank {
+      min-height: 480px;
+      max-height: 640px;
+      overflow: auto;
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.55rem;
+      scrollbar-color: var(--dmr-frame-metal-bright) rgba(3, 12, 9, 0.7);
+    }
+
+    .question-chip {
+      min-height: 74px;
+      padding: 0.72rem;
+      text-align: left;
+      border-radius: 0;
+      line-height: 1.35;
+      font-size: 0.88rem;
+    }
+
+    .question-chip mark {
+      color: #06120e;
+      background: var(--dmr-paint-green);
+      padding: 0 0.12rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .notice {
+      padding: 1rem;
+      border-left: 5px solid var(--warning);
+      background: rgba(255, 209, 102, 0.09);
+      color: var(--ink);
+      line-height: 1.48;
+    }
+
+    .footer {
+      padding: 2rem clamp(1rem, 3vw, 2.5rem);
+      border-top: 1px solid rgba(177, 139, 78, 0.45);
+      color: var(--mint);
+    }
+
+    .footer strong {
+      color: var(--ink);
+    }
+
+    @media (max-width: 1180px) {
+      .hero,
+      .stage-shell,
+      .lesson-board,
+      .question-lab {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-poster {
+        min-height: 320px;
+      }
+
+      .stage-grid,
+      .card-grid,
+      .generated-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+
+      .top-actions {
+        justify-content: flex-start;
+      }
+
+      h1 {
+        font-size: clamp(2.35rem, 13.4vw, 4.45rem);
+      }
+
+      .hero {
+        padding-top: 1.55rem;
+      }
+
+      .hero-poster {
+        min-height: 290px;
+      }
+
+      .hero-meta,
+      .scene-hud,
+      .stage-grid,
+      .card-grid,
+      .generated-strip,
+      .two-col,
+      .question-bank {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading {
+        grid-template-columns: 1fr;
+      }
+
+      .webgpu-stage {
+        min-height: 560px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="dmr-goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"></feGaussianBlur>
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"></feColorMatrix>
+      <feBlend in="SourceGraphic" in2="goo"></feBlend>
+    </filter>
+  </svg>
+  <div class="grain"></div>
+
+  <header class="topbar" data-answer="topbar" tabindex="0">
+    <div class="brand-lockup">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div class="brand-text">
+        <strong>FABLES_INFLUENCE</strong>
+        <span>Classroom walkthrough for the project at /home/mahan/danmanreal.com_MAIN/danmanreal.com_FABLES_INFLUENCE</span>
+      </div>
+    </div>
+    <div class="top-actions" aria-label="Class sections">
+      <button class="jump-button" data-scroll="#map" data-answer="map">Map</button>
+      <button class="jump-button" data-scroll="#steps" data-answer="end-to-end">Steps</button>
+      <button class="jump-button" data-scroll="#files" data-answer="files">Files</button>
+      <button class="jump-button" data-scroll="#questions" data-answer="questions">Questions</button>
+    </div>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-copy">
+      <div class="kicker" data-answer="teacher-mission" tabindex="0">Tomorrow's 10-year-old classroom kit</div>
+      <h1 data-answer="what-is-it" tabindex="0">Hard In The Paint, Easy To Teach</h1>
+      <p data-answer="kid-summary" tabindex="0">
+        This page turns FABLES_INFLUENCE into a giant clickable classroom map. The simple idea:
+        the kit teaches an AI how to build a safe, checkable "finish line" system for any project.
+      </p>
+      <div class="hero-meta">
+        <button class="meta-tile" data-answer="analogy">
+          <strong>Kid analogy</strong>
+          <span>It is like giving a robot a recipe book, checklist, notebook, and inspector.</span>
+        </button>
+        <button class="meta-tile" data-answer="teacher-outcome">
+          <strong>Teacher outcome</strong>
+          <span>Use the map, scripts, and question bank to answer live student questions.</span>
+        </button>
+        <button class="meta-tile" data-answer="proof-rule">
+          <strong>Big rule</strong>
+          <span>No "done" claims without evidence that can be checked.</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-poster">
+      <div class="metal-frame" data-answer="hero-asset" tabindex="0">
+        <span class="jewel tl"></span><span class="jewel tr"></span><span class="jewel bl"></span><span class="jewel br"></span>
+        <div class="paint-rail"><span></span><span></span><span></span><span></span><i></i><i></i><i></i></div>
+        <div class="poster-caption">
+          <strong>The project is a harness factory.</strong>
+          <span>It does not merely say "work harder." It builds a playbook, ledgers, wargames, status truth, and a verifier so the next agent knows exactly what to do.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section class="section" id="map">
+      <div class="section-heading">
+        <div>
+          <div class="kicker">I. WebGPU system map</div>
+          <h2>Click The Factory</h2>
+          <p>Every node in the 3D scene is one stop in the project journey. Click a glowing block, a timeline tile, or any card to load a kid-friendly answer and teacher note.</p>
+        </div>
+        <button class="ghost-button" data-answer="webgpu-why">Why WebGPU?</button>
+      </div>
+
+      <div class="stage-shell">
+        <section class="webgpu-stage metal-frame" aria-label="Three.js WebGPU system map">
+          <span class="jewel tl"></span><span class="jewel tr"></span><span class="jewel bl"></span><span class="jewel br"></span>
+          <div class="paint-rail"><span></span><span></span><span></span><span></span><i></i><i></i><i></i></div>
+          <div id="webgpuScene" data-answer="scene" tabindex="0">
+            <div class="scene-fallback" id="sceneFallback">
+              <div>
+                <strong>Loading WebGPU map</strong>
+                <p>All lesson panels still work if the browser cannot start WebGPU.</p>
+              </div>
+            </div>
+          </div>
+          <div class="scene-hud">
+            <button class="hud-tile" data-answer="renderer-proof"><strong>Renderer</strong><span id="rendererStatus">Checking WebGPU...</span></button>
+            <button class="hud-tile" data-answer="nodes-mean"><strong>Nodes</strong><span>Each block is a real project step.</span></button>
+            <button class="hud-tile" data-answer="click-rule"><strong>Click rule</strong><span>Click the scene, cards, terms, files, or questions.</span></button>
+          </div>
+        </section>
+
+        <aside class="answer-console metal-frame" id="answerPanel" aria-live="polite">
+          <span class="jewel tl"></span><span class="jewel tr"></span><span class="jewel bl"></span><span class="jewel br"></span>
+          <div class="paint-rail"><span></span><span></span><span></span><span></span><i></i><i></i><i></i></div>
+          <div class="answer-kicker" id="answerKicker">Click anything</div>
+          <h2 id="answerTitle">What is FABLES_INFLUENCE?</h2>
+          <div class="answer-body">
+            <div class="answer-block">
+              <strong>10-year-old answer</strong>
+              <p id="kidAnswer">It is a kit that helps an AI make a project finishable. It creates the instructions, checklists, notebooks, safety rules, and proof checks so work does not get lost.</p>
+            </div>
+            <div class="answer-block">
+              <strong>Teacher note</strong>
+              <p id="teacherAnswer">Start with the backpack analogy: the repo is not the finished school project. It is the backpack that gives the next AI all the tools to finish a project safely and prove it.</p>
+            </div>
+            <div class="answer-block">
+              <strong>Use case</strong>
+              <p id="useAnswer">Use it when a project is too big for one chat, has many agents, needs owner decisions, or needs evidence before anyone says "done."</p>
+            </div>
+            <div class="source-row" id="sourceRow"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="steps">
+      <div class="section-heading">
+        <div>
+          <div class="kicker">II. End to end</div>
+          <h2>Start To Finish</h2>
+          <p>This is the whole trip: from downloading the kit to handing the next AI a verified, resumable project harness.</p>
+        </div>
+        <button class="ghost-button" data-answer="end-to-end">Explain the whole flow</button>
+      </div>
+      <div class="stage-grid" id="stageGrid"></div>
+    </section>
+
+    <section class="section" id="files">
+      <div class="section-heading">
+        <div>
+          <div class="kicker">III. What each file does</div>
+          <h2>The Backpack</h2>
+          <p>The repo is organized like a class project bag: the start card, the big prompt, the launch directions, the templates, the wargames, the design skill, and the catalog.</p>
+        </div>
+        <button class="ghost-button" data-answer="files">Explain all files</button>
+      </div>
+      <div class="card-grid" id="fileGrid"></div>
+    </section>
+
+    <section class="section" id="generated">
+      <div class="section-heading">
+        <div>
+          <div class="kicker">IV. What gets generated</div>
+          <h2>FABLES_HARNESS</h2>
+          <p>When the genesis prompt runs in a target project, the AI builds a harness folder. These are the durable objects the class should recognize.</p>
+        </div>
+        <button class="ghost-button" data-answer="generated-harness">What is FABLES_HARNESS?</button>
+      </div>
+      <div class="generated-strip" id="generatedGrid"></div>
+    </section>
+
+    <section class="section" id="uses">
+      <div class="section-heading">
+        <div>
+          <div class="kicker">V. Use cases</div>
+          <h2>When Do We Use It?</h2>
+          <p>FABLES_INFLUENCE is project-agnostic. That means the same method can help many kinds of work, from a game to a school club website.</p>
+        </div>
+        <button class="ghost-button" data-answer="use-cases">Give me examples</button>
+      </div>
+      <div class="card-grid" id="useGrid"></div>
+    </section>
+
+    <section class="section" id="teacher">
+      <div class="section-heading">
+        <div>
+          <div class="kicker">VI. Teacher board</div>
+          <h2>Class Plan</h2>
+          <p>Use these tiles as the live lesson order. Each tile includes a short classroom script and the common question it answers.</p>
+        </div>
+        <button class="ghost-button" data-answer="teacher-mission">Teacher mission</button>
+      </div>
+      <div class="lesson-board">
+        <div class="lesson-list" id="lessonList"></div>
+        <aside class="teacher-script metal-frame">
+          <span class="jewel tl"></span><span class="jewel tr"></span><span class="jewel bl"></span><span class="jewel br"></span>
+          <div class="paint-rail"><span></span><span></span><span></span><span></span><i></i><i></i><i></i></div>
+          <h3>Teacher script you can say out loud</h3>
+          <div class="script-lines">
+            <div class="script-line" data-answer="script-robot">"Imagine a robot helper. If you only say 'finish my project,' it may guess. FABLES_INFLUENCE gives the robot a map, a checklist, and a proof test."</div>
+            <div class="script-line" data-answer="script-evidence">"In this system, done is not a feeling. Done means the file exists, the ledger says where it is, and the verifier can check it."</div>
+            <div class="script-line" data-answer="script-owner">"Some questions belong to the human owner. The AI is allowed to stop and ask instead of inventing the answer."</div>
+            <div class="script-line" data-answer="script-wargame">"Before the mission begins, the system plays a pretend battle against mistakes. That is called a wargame."</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="glossary">
+      <div class="section-heading">
+        <div>
+          <div class="kicker">VII. Glossary</div>
+          <h2>Words Kids Will Ask About</h2>
+          <p>Click a word when a student asks what it means. The answer panel gives a simple definition and a teacher bridge.</p>
+        </div>
+        <button class="ghost-button" data-answer="glossary">Open glossary answer</button>
+      </div>
+      <div class="card-grid" id="termGrid"></div>
+    </section>
+
+    <section class="section" id="questions">
+      <div class="section-heading">
+        <div>
+          <div class="kicker">VIII. 500-question support board</div>
+          <h2>Question Engine</h2>
+          <p>Ten topic buckets generate 500 classroom question chips. Search, switch topics, and click a question to get an instant answer for the class.</p>
+        </div>
+        <button class="ghost-button" data-answer="questions">How to use questions</button>
+      </div>
+      <div class="question-lab">
+        <aside class="question-controls metal-frame">
+          <span class="jewel tl"></span><span class="jewel tr"></span><span class="jewel bl"></span><span class="jewel br"></span>
+          <div class="paint-rail"><span></span><span></span><span></span><span></span><i></i><i></i><i></i></div>
+          <label for="questionSearch">Search student questions</label>
+          <input id="questionSearch" type="search" placeholder="Try: robot, evidence, wargame, secret, playbook">
+          <div class="topic-list" id="topicList"></div>
+          <div class="notice" data-answer="question-bank-size" tabindex="0">The bank is deliberately bigger than one class period so you can handle many repeated or unexpected questions without leaving the page.</div>
+        </aside>
+        <div class="question-bank metal-frame" id="questionBank" aria-label="Generated classroom questions">
+          <span class="jewel tl"></span><span class="jewel tr"></span><span class="jewel bl"></span><span class="jewel br"></span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <strong>Source path:</strong> /home/mahan/danmanreal.com_MAIN/danmanreal.com_FABLES_INFLUENCE.
+    This HTML is an additive teaching artifact for the existing kit. It uses Three.js WebGPU for the system map and keeps all class content clickable.
+  </footer>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.webgpu.js",
+        "three/webgpu": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.webgpu.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from "three/webgpu";
+
+    window.addEventListener("unhandledrejection", event => {
+      const message = String(event.reason?.message || event.reason || "");
+      if (message.includes("popErrorScope") || message.includes("Instance dropped")) {
+        window.__FABLES_WEBGPU_NOTE = message;
+        event.preventDefault();
+      }
+    });
+
+    const sources = {
+      readme: "README.md",
+      start: "START_HERE.md",
+      genesis: "GENESIS_PROMPT.md",
+      launch: "LAUNCH_KIT.md",
+      catalog: "docs/FULL_SCOPE_CATALOG.md",
+      harness: "template/HARNESS_SPEC.md",
+      playbook: "template/PLAYBOOK_HTML_SPEC.md",
+      status: "template/EXECUTION_STATUS.template.json",
+      ledgers: "template/ledgers/*.template.md",
+      wargames: "wargames/*.md",
+      design: "skills/dmr-danmanreal-design/"
+    };
+
+    const stages = [
+      {
+        id: "download-kit",
+        title: "Download the kit",
+        short: "Get the FABLES_INFLUENCE folder.",
+        kid: "First, you get the backpack. The backpack is this repo. It has directions, templates, safety notes, and a design style.",
+        teacher: "Point at README.md and START_HERE.md. The repo is not the generated harness yet; it is the kit that creates one for another project.",
+        use: "Use when a project needs a reliable finish system before more AI work starts.",
+        source: [sources.readme, sources.start],
+        color: 0x12b7f8
+      },
+      {
+        id: "choose-project",
+        title: "Pick the target project",
+        short: "Open the project that needs finishing.",
+        kid: "Now choose the messy project that needs help. It could be a game, website, video plan, science fair folder, or big codebase.",
+        teacher: "The README quickstart says to open Claude Code at the target project root, not inside the kit, because the generated FABLES_HARNESS belongs in the target project.",
+        use: "Works for any stack because the method studies the project before writing the harness.",
+        source: [sources.readme, sources.launch],
+        color: 0x26f296
+      },
+      {
+        id: "paste-genesis",
+        title: "Paste GENESIS_PROMPT",
+        short: "Start the generator prompt.",
+        kid: "The big prompt is the magic instruction card. It tells the AI to read the kit, ask questions, and build the harness.",
+        teacher: "GENESIS_PROMPT.md is the launch command for a capable agent. The agent reads templates, wargames, and the design skill before producing the harness.",
+        use: "Use it to turn a generic agent session into a governed project setup session.",
+        source: [sources.genesis, sources.launch],
+        color: 0xf04fb0
+      },
+      {
+        id: "owner-questions",
+        title: "Ask owner questions",
+        short: "The AI stops for facts only the owner knows.",
+        kid: "If the AI does not know an answer, it should raise its hand. It should not make up the owner's choice.",
+        teacher: "The owner-decision ledger exists because some values are Dan-gated or owner-only. This prevents invented requirements.",
+        use: "Use when project goals, allowed actions, or product decisions are not written down yet.",
+        source: [sources.harness, sources.ledgers],
+        color: 0xffd166
+      },
+      {
+        id: "read-project",
+        title: "Read the real project",
+        short: "The AI inspects files before making a plan.",
+        kid: "A helper should look at the real homework before giving advice. It reads the project so it does not guess.",
+        teacher: "The harness method is evidence-first: current disk beats memory. This is how the generated playbook becomes project-specific.",
+        use: "Use when a workspace is large, confusing, or has old notes that may be stale.",
+        source: [sources.harness, sources.catalog],
+        color: 0xb18b4e
+      },
+      {
+        id: "build-harness",
+        title: "Build FABLES_HARNESS",
+        short: "Create the cockpit, playbook, JSON, status, ledgers, and verifier.",
+        kid: "The AI makes a control room folder. It has buttons to copy prompts, a status board, notebooks, and a checker.",
+        teacher: "The generated output layout is specified in template/HARNESS_SPEC.md, including FABLE_START_HERE, FABLE_PROMPT_PLAYBOOK.html, prompt JSON, status JSON, ledgers, and verify_bundle.py.",
+        use: "Use to make the next session restartable instead of depending on chat memory.",
+        source: [sources.harness, sources.playbook, sources.status],
+        color: 0x0cb6f8
+      },
+      {
+        id: "playbook",
+        title: "Open the playbook",
+        short: "Use the interactive prompt blocks.",
+        kid: "The playbook is like a level select screen. Each block tells the AI what mission to do next.",
+        teacher: "FABLE_PROMPT_PLAYBOOK.html is self-contained, styled with DanManREAL DESIGN, and paired with a machine-readable JSON twin whose blocks are hash anchored.",
+        use: "Use when multiple agents or sessions need the same exact prompts in order.",
+        source: [sources.playbook],
+        color: 0x197cc1
+      },
+      {
+        id: "builder-auditor",
+        title: "Run builder and auditor blocks",
+        short: "One block builds, the next checks.",
+        kid: "One helper makes something. Another helper checks if it is real. That keeps mistakes from sneaking through.",
+        teacher: "The method pairs builder prompt blocks with independent read-only auditor blocks, so execution and verification are separate jobs.",
+        use: "Use for code, docs, audits, reports, and any work where a claim needs a second check.",
+        source: [sources.readme, sources.playbook],
+        color: 0x8b3df0
+      },
+      {
+        id: "ledgers",
+        title: "Update ledgers",
+        short: "Write durable memory to files.",
+        kid: "The notebooks remember what happened, what proof exists, what the owner decided, and what the next helper should do.",
+        teacher: "The five ledger templates preserve evidence, owner decisions, next-agent handoff, re-entry notes, and pre-block sanity checks.",
+        use: "Use when work spans days, agents, or machines.",
+        source: [sources.ledgers],
+        color: 0x26f296
+      },
+      {
+        id: "wargame",
+        title: "Wargame the plan",
+        short: "Pretend to break the plan first.",
+        kid: "Before you build the bridge, ask how it might fall down. Then make it stronger.",
+        teacher: "The wargame method includes executor-blind mission briefs, likely failure causes, counter-moves, and a definition of done.",
+        use: "Use before risky or confusing work so the plan already has answers for common failure paths.",
+        source: [sources.wargames],
+        color: 0xff6b6b
+      },
+      {
+        id: "verify",
+        title: "Run verify_bundle.py",
+        short: "Check that the harness matches itself.",
+        kid: "The checker makes sure the HTML, JSON, status board, and hashes agree with each other.",
+        teacher: "verify_bundle.py proves internal consistency. The project teaches that proof must come from a command or file, not a vibe.",
+        use: "Use before handing the harness to another agent or owner.",
+        source: [sources.harness, "template/verify_bundle.py"],
+        color: 0x12b7f8
+      },
+      {
+        id: "handoff",
+        title: "Hand off with proof",
+        short: "The next agent knows the exact next step.",
+        kid: "The next helper opens the cockpit and knows where to start, what is already done, and what proof to trust.",
+        teacher: "FABLE_START_HERE and FABLE_EXECUTION_STATUS.json make re-entry explicit. This is the answer to forgotten chat context.",
+        use: "Use when a project must survive session breaks, agent changes, or classroom demonstrations.",
+        source: [sources.start, sources.status, sources.ledgers],
+        color: 0xb18b4e
+      }
+    ];
+
+    const files = [
+      ["README.md", "Front door", "Explains the quickstart, what is inside, the method, safety spine, requirements, and community links.", "file-readme"],
+      ["START_HERE.md", "Human tour", "A plain-language tour of the generated FABLES_HARNESS and the pieces a human opens first.", "file-start"],
+      ["GENESIS_PROMPT.md", "The launch prompt", "The one prompt pasted into a capable AI session to generate the harness for a target project.", "file-genesis"],
+      ["LAUNCH_KIT.md", "Teacher launch manual", "Long-form launch directions, acceptance rules, and what a successful generated package should include.", "file-launch"],
+      ["template/HARNESS_SPEC.md", "Contract", "The exact generated output layout and schema expectations for the harness.", "file-harness"],
+      ["template/PLAYBOOK_HTML_SPEC.md", "Interactive HTML spec", "The contract for FABLE_PROMPT_PLAYBOOK.html: prompt blocks, copy flow, sent tracking, and hash anchoring.", "file-playbook"],
+      ["template/EXECUTION_STATUS.template.json", "Truth board", "The status file that knows which prompt block is next and what is already done.", "file-status"],
+      ["template/ledgers/", "Durable notebooks", "Evidence, owner decisions, next-agent handoff, re-entry notes, and pre-block sanity checks.", "file-ledgers"],
+      ["wargames/", "Pressure test method", "Templates and findings for testing the plan against failures before execution starts.", "file-wargames"],
+      ["skills/dmr-danmanreal-design/", "Visual canon", "The bundled DanManREAL DESIGN skill: green abyss, gunmetal frames, jewel corners, living paint.", "file-design"],
+      ["docs/FULL_SCOPE_CATALOG.md", "Max scope menu", "A catalog of artifact classes the original system could generate: audits, specs, skills, governance, ops, memory, evals.", "file-catalog"],
+      ["docs/assets/", "Visual assets", "The hero image and preview art used to explain the package publicly.", "file-assets"]
+    ];
+
+    const generated = [
+      ["FABLE_START_HERE.md", "Cockpit", "Reading order plus start, resume, hard stop, and final exit prompts.", "generated-start"],
+      ["FABLE_PROMPT_PLAYBOOK.html", "Clickable playbook", "The browser file with prompt blocks, copy buttons, and sent tracking.", "generated-html"],
+      ["FABLE_PROMPT_BLOCKS.json", "Machine twin", "The structured data version of every prompt block.", "generated-json"],
+      ["FABLE_EXECUTION_STATUS.json", "Next-step truth", "The exact current status and next block to run.", "generated-status"],
+      ["meta_control_prompts.md", "Control moves", "Prompts for start, resume, hard stop, and final exit behavior.", "generated-meta"],
+      ["ledgers/*.md", "Permanent notebooks", "Evidence, owner decisions, re-entry notes, handoff, and sanity checks.", "generated-ledgers"],
+      ["wargames/*.md", "Failure practice", "Mission briefs and red-team checks before real execution.", "generated-wargames"],
+      ["verify_bundle.py", "Integrity checker", "The command that checks the harness agrees with itself.", "generated-verify"]
+    ];
+
+    const useCases = [
+      ["Finish a game", "Turn a half-built game into ordered missions: gameplay, art, testing, proof screenshots, and final handoff.", "use-game"],
+      ["Launch a website", "Create exact build, audit, content, visual QA, and publish-readiness blocks without guessing.", "use-website"],
+      ["Make a YouTube package", "Coordinate script, title, thumbnail, recording checklist, evidence, and next-agent handoff.", "use-youtube"],
+      ["Clean up a repo", "Inventory files, protect secrets, separate unrelated changes, and prove the cleanup safely.", "use-cleanup"],
+      ["Run many AI agents", "Give each agent a clear lane, then use auditor blocks and ledgers so work does not collide.", "use-agents"],
+      ["Teach a class project", "Let students see planning, proof, roles, and safe stopping as a repeatable system.", "use-class"],
+      ["Resume after a break", "Use status and re-entry notes so a new helper knows what happened yesterday.", "use-resume"],
+      ["Protect owner decisions", "Stop when only the human can choose, then record the answer in the owner-decision ledger.", "use-owner"],
+      ["Audit a claim", "Ask where the proof is, what command passed, and whether the evidence covers the whole claim.", "use-audit"],
+      ["Generate a prompt playbook", "Turn a big project into ordered builder and auditor prompts that can be copied and tracked.", "use-playbook"],
+      ["Create a status truth file", "Keep the exact next step in one JSON file instead of guessing from a long chat.", "use-status"],
+      ["Build an evidence index", "Collect proof paths, command outputs, screenshots, and artifact locations in one durable ledger.", "use-evidence"],
+      ["Write governance docs", "Turn rules into visible contracts so agents know what they must do and what they must not do.", "use-governance"],
+      ["Run evals and tests", "Define what passing means, then check work against the same standard every time.", "use-evals"],
+      ["Create reusable skills", "Package a repeatable method, like DanManREAL DESIGN, so future agents can load the same standard.", "use-skills"],
+      ["Plan safe operations", "Write clear runbooks for dangerous work so reading, writing, deploying, and stopping are separate choices.", "use-ops"],
+      ["Make a polished report", "Generate a human-readable guide or final report while keeping a machine-readable twin for agents.", "use-report"],
+      ["Recover from confusion", "Use re-entry notes, handoff ledgers, and the current status file when a session gets interrupted.", "use-recovery"]
+    ];
+
+    const terms = [
+      ["Harness", "A folder that wraps a project with instructions, status, ledgers, wargames, and a verifier.", "term-harness"],
+      ["Playbook", "The clickable list of prompt blocks that tells an AI what to do next.", "term-playbook"],
+      ["Ledger", "A durable notebook file that remembers evidence, choices, and handoffs.", "term-ledger"],
+      ["Wargame", "A pretend battle against mistakes before real work begins.", "term-wargame"],
+      ["Verifier", "A checker command that proves files agree with the spec.", "term-verifier"],
+      ["Owner decision", "A question the AI must ask the human instead of inventing.", "term-owner"],
+      ["Evidence", "A file, command output, screenshot, or artifact that proves a claim.", "term-evidence"],
+      ["Builder block", "A prompt block that asks an AI to create or change something.", "term-builder"],
+      ["Auditor block", "A read-only prompt block that checks the builder's claim.", "term-auditor"]
+    ];
+
+    const lessons = [
+      ["0-5 min", "Backpack analogy", "Show that the repo is a backpack for finishing projects, not just a pile of files.", "lesson-backpack"],
+      ["5-12 min", "Click the WebGPU map", "Walk the class around the 12 project stages and click nodes as students ask why.", "lesson-map"],
+      ["12-20 min", "Open the file backpack", "Explain README, START_HERE, GENESIS_PROMPT, templates, ledgers, wargames, and design skill.", "lesson-files"],
+      ["20-28 min", "Generated harness", "Show what FABLES_HARNESS contains and why each generated file exists.", "lesson-harness"],
+      ["28-35 min", "Wargame a silly project", "Ask: how could a robot fail while building a lemonade stand website? Then create counter-moves.", "lesson-wargame"],
+      ["35-43 min", "Question storm", "Use the question engine. Let students pick topics and click chips for answers.", "lesson-questions"],
+      ["43-45 min", "Exit rule", "Repeat: no done without proof, and a good AI asks when only the owner can decide.", "lesson-exit"]
+    ];
+
+    const answerMap = {
+      "what-is-it": ["Core idea", "FABLES_INFLUENCE is a kit that teaches an AI how to make a finish-line control system for a project.", "The key distinction: this repo is the generator kit. The generated result is a FABLES_HARNESS inside the owner's target project.", "Use it when the project is too important to trust memory, guesses, or loose 'done' claims.", [sources.readme, sources.start]],
+      "kid-summary": ["Kid summary", "Think of it as a robot backpack: map, recipe cards, notebooks, stop signs, and a checker.", "This analogy keeps 10-year-olds oriented while preserving the real architecture.", "Use the analogy whenever students ask why there are so many files.", [sources.readme]],
+      "teacher-mission": ["Teacher mission", "Your job is to show that big AI projects need maps, proof, and safe stopping points.", "Keep returning to three rules: read the real project, write durable evidence, verify before claiming done.", "Use this page as the live answer console during the class.", [sources.start, sources.harness]],
+      "analogy": ["Backpack analogy", "The repo is a backpack for an AI helper. It holds directions, blank forms, notebooks, style rules, and safety rules.", "The generated harness is what the AI packs for the specific project after reading it.", "Use this when students ask 'Is this the project?' Answer: it is the tool that helps finish a project.", [sources.readme, sources.start]],
+      "teacher-outcome": ["Teacher outcome", "By the end, students should know how a system can help an AI plan, remember, check, and stop safely.", "You do not need them to memorize file names. They should understand roles: prompt, playbook, ledger, wargame, verifier.", "Use the question bank for rapid answers and the map for spatial memory.", [sources.start]],
+      "proof-rule": ["Proof rule", "The big rule is: evidence or it did not happen.", "The README safety spine says a block is complete when artifacts exist and are recorded, not just because an agent says so.", "Use this rule for coding, homework, science experiments, and AI work.", [sources.readme, sources.ledgers]],
+      "hero-asset": ["Hero image", "The big poster is the repo's visual front door. It makes the project feel like one named kit.", "The classroom page uses the existing docs/assets/hero.svg so the walkthrough stays tied to the actual project.", "Use it to explain branding: the visual identity helps humans recognize the system.", ["docs/assets/hero.svg"]],
+      "map": ["WebGPU map", "The 3D map is a factory tour. Each glowing block is one stop in the journey from kit to verified handoff.", "The map is teaching structure, not just decoration. Clicked nodes update the answer console with concrete source files.", "Use it when the class needs a visual reset.", [sources.playbook, sources.harness]],
+      "scene": ["3D scene", "The center is the harness factory. The orbiting blocks are the steps. The lines show that every step connects to the next.", "The scene uses Three.js WebGPU when available and falls back to lesson panels if the browser cannot start WebGPU.", "Use the scene to answer 'where are we in the process?'", ["Three.js WebGPU", sources.harness]],
+      "webgpu-why": ["Why WebGPU?", "WebGPU lets the browser draw a live 3D map with modern graphics power.", "For class, WebGPU is the attention hook. The actual learning is the project architecture connected to each clickable object.", "Use it to show that serious systems can still be visual and explorable.", ["Three.js WebGPU"]],
+      "renderer-proof": ["Renderer status", "If the status says WebGPU, the 3D map is running on the browser's GPU. If it says fallback, the lesson still works.", "Final visual proof should use a real GPU screenshot path because headless browser screenshots can miss WebGPU canvases on this machine.", "Use this if students ask whether the 3D map is real.", ["navigator.gpu", "Three.js WebGPU"]],
+      "nodes-mean": ["What nodes mean", "A node is a step. Click it to learn what the AI or owner does at that moment.", "The nodes match the end-to-end walkthrough: download, choose project, paste prompt, ask owner questions, read project, build harness, run blocks, log evidence, wargame, verify, hand off.", "Use it to keep questions attached to process.", [sources.harness]],
+      "click-rule": ["Click rule", "The page is built so lesson pieces are clickable: scene objects, stages, files, use cases, glossary terms, script lines, and question chips.", "The answer console is the stable place where explanations appear, so you do not have to hunt through the page while teaching.", "Use this when you need to answer fast.", ["This HTML artifact"]],
+      "end-to-end": ["Whole flow", "Get the kit, open a target project, paste GENESIS_PROMPT, let the AI ask owner questions, read the project, generate FABLES_HARNESS, run prompt blocks, update ledgers, wargame, verify, and hand off.", "This is the end-to-end narrative the class should leave with. It shows why the kit exists and how it turns vague AI work into a managed system.", "Use for any project that needs reliable AI execution over time.", [sources.readme, sources.start, sources.harness]],
+      "files": ["Files overview", "The files are roles in the backpack: README explains, START_HERE tours, GENESIS_PROMPT launches, templates define output, ledgers remember, wargames test, design skill dresses the work.", "Do not teach file names as trivia. Teach the role each file plays in the system.", "Use when students ask 'why so many files?'", [sources.readme, sources.start]],
+      "generated-harness": ["Generated harness", "FABLES_HARNESS is the control room folder the AI creates inside the target project.", "It contains the human cockpit, interactive prompt playbook, JSON prompt twin, execution status, ledgers, meta-control prompts, wargames, and verifier.", "Use when the class asks what the kit produces.", [sources.harness]],
+      "use-cases": ["Use cases", "Use the method for big projects that need planning, proof, handoff, and safe AI help.", "The kit is project-agnostic: it can wrap code, content, audits, reports, lessons, or launch work.", "Use it when guessing would be expensive or confusing.", [sources.catalog, sources.readme]],
+      "glossary": ["Glossary", "The glossary turns grown-up system words into kid-sized definitions.", "Vocabulary is a teaching tool. If a child knows what a ledger, verifier, and owner decision are, the full method becomes much easier.", "Use this section during open questions.", [sources.harness, sources.ledgers]],
+      "questions": ["Question engine", "The question board gives many clickable questions so a class can ask fast without derailing the lesson.", "It has 10 topics and 50 generated chips per topic. The answer panel gives short explanations tied back to the project.", "Use search when students ask with different words.", ["This HTML artifact"]],
+      "question-bank-size": ["Why 500 questions?", "Ten students with many questions can repeat the same idea in different ways. A big bank helps you answer quickly.", "The point is coverage, not reading every chip. Search and topic filters make the bank usable live.", "Use it as a teacher safety net.", ["This HTML artifact"]],
+      "topbar": ["Navigation bar", "The top bar jumps to the map, steps, files, and question board.", "Keep it sticky so the teacher can recover quickly during a noisy class.", "Use when you need to move without scrolling a long page.", ["This HTML artifact"]],
+      "script-robot": ["Robot helper script", "A robot helper needs exact instructions or it may guess.", "This line anchors the entire system: the kit improves AI behavior by giving it structure before execution.", "Use when students say 'why not just ask AI to finish?'", [sources.genesis]],
+      "script-evidence": ["Evidence script", "Done is not a feeling. Done means proof exists.", "This reinforces the evidence ledger and verify_bundle.py as the trust mechanism.", "Use whenever a student asks how we know the AI is telling the truth.", [sources.ledgers, "template/verify_bundle.py"]],
+      "script-owner": ["Owner script", "Some answers belong to the human owner.", "This maps to owner-only decisions and Dan-gated placeholders. A safe AI stops instead of inventing.", "Use when students ask why the AI cannot decide everything.", [sources.ledgers]],
+      "script-wargame": ["Wargame script", "A wargame is practice against failure.", "Make it concrete: before building a bridge, ask how it might break. Before running agents, ask how they might drift.", "Use before discussing the wargames folder.", [sources.wargames]]
+    };
+
+    files.forEach(([name, label, text, id]) => {
+      answerMap[id] = [name, `${name} is the ${label.toLowerCase()} part of the backpack. ${text}`, `Teacher note: point out the role first, then the filename. This helps children understand architecture without memorizing paths.`, "Use this file when that role is needed during harness generation or handoff.", [name]];
+    });
+
+    generated.forEach(([name, label, text, id]) => {
+      answerMap[id] = [name, `${name} is generated inside FABLES_HARNESS. It acts like the ${label.toLowerCase()}.`, `Teacher note: ${text}`, "Use it after the kit has studied the target project and is ready to manage work.", [sources.harness]];
+    });
+
+    useCases.forEach(([name, text, id]) => {
+      answerMap[id] = [name, `Yes. The method can help with this because it turns a big job into ordered blocks, proof, ledgers, and handoff notes.`, `Teacher note: ${text}`, "Use the same harness pattern whenever the project needs safe multi-step AI work.", [sources.catalog, sources.readme]];
+    });
+
+    terms.forEach(([name, text, id]) => {
+      answerMap[id] = [name, text, `Teacher bridge: ask students to name where this object appears in the backpack or generated harness.`, "Use the word when explaining how the system remembers and proves work.", [sources.harness]];
+    });
+
+    lessons.forEach(([time, title, text, id]) => {
+      answerMap[id] = [title, `${time}: ${text}`, "Teacher note: keep this part active and ask students to click the matching map node or file card.", "Use as the live class sequence.", ["This HTML artifact"]];
+    });
+
+    const stageGrid = document.querySelector("#stageGrid");
+    stages.forEach((stage, index) => {
+      answerMap[stage.id] = [stage.title, stage.kid, stage.teacher, stage.use, stage.source];
+      const button = document.createElement("button");
+      button.className = "stage-button";
+      button.dataset.answer = stage.id;
+      button.dataset.stageId = stage.id;
+      button.innerHTML = `<span class="stage-index">${String(index + 1).padStart(2, "0")}</span><span><strong>${stage.title}</strong><span>${stage.short}</span></span>`;
+      stageGrid.appendChild(button);
+    });
+
+    const fileGrid = document.querySelector("#fileGrid");
+    files.forEach(([name, label, text, id]) => {
+      const card = document.createElement("button");
+      card.className = "file-card";
+      card.dataset.answer = id;
+      card.innerHTML = `<span class="card-label">${label}</span><strong>${name}</strong><span>${text}</span>`;
+      fileGrid.appendChild(card);
+    });
+
+    const generatedGrid = document.querySelector("#generatedGrid");
+    generated.forEach(([name, label, text, id]) => {
+      const card = document.createElement("button");
+      card.className = "generated-card";
+      card.dataset.answer = id;
+      card.innerHTML = `<span class="card-label">${label}</span><strong>${name}</strong><span>${text}</span>`;
+      generatedGrid.appendChild(card);
+    });
+
+    const useGrid = document.querySelector("#useGrid");
+    useCases.forEach(([name, text, id]) => {
+      const card = document.createElement("button");
+      card.className = "use-card";
+      card.dataset.answer = id;
+      card.innerHTML = `<span class="card-label">Use case</span><strong>${name}</strong><span>${text}</span>`;
+      useGrid.appendChild(card);
+    });
+
+    const termGrid = document.querySelector("#termGrid");
+    terms.forEach(([name, text, id]) => {
+      const card = document.createElement("button");
+      card.className = "term-card";
+      card.dataset.answer = id;
+      card.innerHTML = `<span class="card-label">Glossary</span><strong>${name}</strong><span>${text}</span>`;
+      termGrid.appendChild(card);
+    });
+
+    const lessonList = document.querySelector("#lessonList");
+    lessons.forEach(([time, title, text, id]) => {
+      const card = document.createElement("button");
+      card.className = "lesson-step";
+      card.dataset.answer = id;
+      card.innerHTML = `<span class="card-label">${time}</span><strong>${title}</strong><span>${text}</span>`;
+      lessonList.appendChild(card);
+    });
+
+    function showAnswer(key, sourceElement = null) {
+      const answer = answerMap[key] || answerMap["what-is-it"];
+      document.querySelector("#answerKicker").textContent = sourceElement?.classList?.contains("question-chip") ? "Student question" : "Class answer";
+      document.querySelector("#answerTitle").textContent = answer[0];
+      document.querySelector("#kidAnswer").textContent = answer[1];
+      document.querySelector("#teacherAnswer").textContent = answer[2];
+      document.querySelector("#useAnswer").textContent = answer[3];
+      const sourceRow = document.querySelector("#sourceRow");
+      sourceRow.innerHTML = "";
+      (answer[4] || []).forEach(source => {
+        const pill = document.createElement("button");
+        pill.className = "source-pill";
+        pill.type = "button";
+        pill.dataset.answer = "files";
+        pill.textContent = source;
+        sourceRow.appendChild(pill);
+      });
+      document.querySelectorAll(".stage-button").forEach(button => {
+        button.classList.toggle("is-active", button.dataset.answer === key);
+      });
+      highlightStage(key);
+    }
+
+    document.addEventListener("click", event => {
+      const scrollButton = event.target.closest("[data-scroll]");
+      if (scrollButton) {
+        document.querySelector(scrollButton.dataset.scroll)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      const target = event.target.closest("[data-answer]");
+      if (!target) return;
+      showAnswer(target.dataset.answer, target);
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const target = event.target.closest("[data-answer]");
+      if (!target) return;
+      event.preventDefault();
+      showAnswer(target.dataset.answer, target);
+    });
+
+    const questionTopics = [
+      ["Basics", "what the project is", "It is a kit that helps an AI build a finish-line harness with instructions, ledgers, and proof checks."],
+      ["Robots", "how the AI helper behaves", "The AI helper reads first, asks owner-only questions, follows prompt blocks, and proves results."],
+      ["Files", "why the repo has many files", "Each file has a job: explain, launch, define templates, remember evidence, test plans, or style the output."],
+      ["Playbook", "how prompt blocks work", "A prompt block is a mission card. The playbook keeps the cards in order and makes them easy to copy."],
+      ["Ledgers", "how the system remembers", "Ledgers are notebooks that survive chat breaks: evidence, owner choices, handoff notes, and re-entry clues."],
+      ["Wargames", "how failure practice works", "A wargame asks what could go wrong before work starts, then writes counter-moves."],
+      ["Proof", "how we know work is real", "The verifier, evidence ledger, and command outputs prove claims instead of trusting a sentence."],
+      ["Safety", "why the AI sometimes stops", "The AI stops when a human decision, secret, destructive change, or unsafe action is involved."],
+      ["Use Cases", "where this method helps", "It helps games, websites, videos, reports, audits, and any big project that needs safe AI help."],
+      ["Classroom", "how to teach it", "Use the backpack analogy, click the map, show one file role at a time, then let students ask questions."]
+    ];
+
+    const questionForms = [
+      "Why does {topic} matter?",
+      "Can a robot understand {topic} by itself?",
+      "What happens if we skip {topic}?",
+      "Where do we see {topic} in the project?",
+      "How would I explain {topic} to a friend?",
+      "Is {topic} for kids or grown-ups?",
+      "What is the smallest example of {topic}?",
+      "How does {topic} stop guessing?",
+      "What proof connects to {topic}?",
+      "Can {topic} help a game project?",
+      "Can {topic} help a website?",
+      "Can {topic} help a video plan?",
+      "What mistake does {topic} prevent?",
+      "Who is responsible for {topic}?",
+      "When should the AI ask the owner about {topic}?",
+      "How does {topic} help tomorrow's helper?",
+      "What is a silly classroom example of {topic}?",
+      "What is the serious real-world version of {topic}?",
+      "How does {topic} make the project safer?",
+      "How does {topic} make the project faster?",
+      "How does {topic} make the project easier to resume?",
+      "What file would I click for {topic}?",
+      "What map node would I click for {topic}?",
+      "How do ledgers connect to {topic}?",
+      "How do wargames connect to {topic}?",
+      "How does the playbook connect to {topic}?",
+      "How does the verifier connect to {topic}?",
+      "Why is {topic} better than memory?",
+      "Why is {topic} better than a promise?",
+      "How can {topic} catch an AI mistake?",
+      "What would a builder block do with {topic}?",
+      "What would an auditor block check about {topic}?",
+      "How would {topic} help a group project?",
+      "What if two agents disagree about {topic}?",
+      "What if the owner changes their mind about {topic}?",
+      "What if the project is huge and {topic} feels confusing?",
+      "What should we write down about {topic}?",
+      "What should we never invent about {topic}?",
+      "How can a 10-year-old remember {topic}?",
+      "How does {topic} fit in FABLES_HARNESS?",
+      "Does {topic} happen before or after the genesis prompt?",
+      "Does {topic} happen before or after verification?",
+      "How could {topic} fail?",
+      "What counter-move protects {topic}?",
+      "What question should I ask when I see {topic}?",
+      "What does {topic} look like on disk?",
+      "What does {topic} look like in class?",
+      "How does {topic} help Dan teach this?",
+      "What is the one-sentence answer for {topic}?",
+      "What should I click next after {topic}?"
+    ];
+
+    let activeTopic = "All";
+    const questions = [];
+    questionTopics.forEach(([topic, phrase, answer]) => {
+      questionForms.forEach((form, index) => {
+        const text = form.replace("{topic}", phrase);
+        const id = `question-${topic.toLowerCase().replace(/\s+/g, "-")}-${index + 1}`;
+        questions.push({ id, topic, text, answer });
+        answerMap[id] = [
+          text,
+          answer,
+          `Teacher note: connect this question back to ${topic}. Then click the closest stage, file, or glossary card if the class wants the deeper version.`,
+          "Use the short answer first, then show one concrete source file or map node.",
+          [sources.readme, sources.harness]
+        ];
+      });
+    });
+
+    const topicList = document.querySelector("#topicList");
+    ["All", ...questionTopics.map(topic => topic[0])].forEach(topic => {
+      const button = document.createElement("button");
+      button.className = "small-chip";
+      button.textContent = topic;
+      button.type = "button";
+      button.addEventListener("click", () => {
+        activeTopic = topic;
+        renderQuestions();
+      });
+      topicList.appendChild(button);
+    });
+
+    document.querySelector("#questionSearch").addEventListener("input", renderQuestions);
+
+    function renderQuestions() {
+      const query = document.querySelector("#questionSearch").value.trim().toLowerCase();
+      document.querySelectorAll("#topicList .small-chip").forEach(button => {
+        button.classList.toggle("is-active", button.textContent === activeTopic);
+      });
+      const bank = document.querySelector("#questionBank");
+      bank.querySelectorAll(".question-chip").forEach(node => node.remove());
+      const filtered = questions.filter(question => {
+        const topicOk = activeTopic === "All" || question.topic === activeTopic;
+        const queryOk = !query || `${question.text} ${question.topic}`.toLowerCase().includes(query);
+        return topicOk && queryOk;
+      });
+      filtered.slice(0, 120).forEach(question => {
+        const button = document.createElement("button");
+        button.className = "question-chip";
+        button.dataset.answer = question.id;
+        button.type = "button";
+        const label = `${question.topic}: ${question.text}`;
+        button.textContent = label;
+        bank.appendChild(button);
+      });
+      if (!filtered.length) {
+        const empty = document.createElement("button");
+        empty.className = "question-chip";
+        empty.dataset.answer = "questions";
+        empty.textContent = "No exact match. Click here for the general question strategy.";
+        bank.appendChild(empty);
+      }
+    }
+
+    renderQuestions();
+
+    let stageMeshes = new Map();
+    let highlightStage = () => {};
+
+    async function startWebGPU() {
+      const mount = document.querySelector("#webgpuScene");
+      const fallback = document.querySelector("#sceneFallback");
+      const status = document.querySelector("#rendererStatus");
+
+      if (!navigator.gpu || !THREE.WebGPURenderer) {
+        status.textContent = "Fallback lesson mode";
+        window.__FABLES_CLASSROOM_READY = { backend: "fallback", stageCount: stages.length, questionCount: questions.length };
+        return;
+      }
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x030c09);
+      const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 100);
+      camera.position.set(0, 7.5, 15);
+      camera.lookAt(0, 0, 0);
+
+      const renderer = new THREE.WebGPURenderer({ antialias: true, alpha: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(mount.clientWidth, mount.clientHeight);
+      await renderer.init();
+      mount.appendChild(renderer.domElement);
+      fallback.style.display = "none";
+      status.textContent = "Three.js WebGPU running";
+      window.__DMR_FIELD_BACKEND = "webgpu";
+      window.__FABLES_CLASSROOM_READY = { backend: "webgpu", stageCount: stages.length, questionCount: questions.length };
+
+      const group = new THREE.Group();
+      scene.add(group);
+
+      const centralMaterial = new THREE.MeshBasicMaterial({ color: 0x0b2118 });
+      const rimMaterial = new THREE.MeshBasicMaterial({ color: 0xb18b4e });
+      const jewelMaterial = new THREE.MeshBasicMaterial({ color: 0x0cb6f8 });
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(2.25, 2.65, 0.7, 48), centralMaterial);
+      hub.position.y = -0.15;
+      group.add(hub);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(2.75, 0.08, 12, 64), rimMaterial);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = 0.28;
+      group.add(ring);
+      const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.85, 2), jewelMaterial);
+      core.position.y = 0.92;
+      group.add(core);
+
+      function makeBeam(start, end, color) {
+        const direction = new THREE.Vector3().subVectors(end, start);
+        const length = direction.length();
+        const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+        const geometry = new THREE.CylinderGeometry(0.025, 0.025, length, 8);
+        const material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.58 });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.copy(midpoint);
+        mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
+        group.add(mesh);
+        return mesh;
+      }
+
+      const radius = 5.6;
+      stages.forEach((stage, index) => {
+        const angle = (index / stages.length) * Math.PI * 2 - Math.PI / 2;
+        const position = new THREE.Vector3(Math.cos(angle) * radius, Math.sin(index * 1.7) * 0.45 + 0.75, Math.sin(angle) * radius);
+        const material = new THREE.MeshBasicMaterial({ color: stage.color });
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.92, 0.92), material);
+        mesh.position.copy(position);
+        mesh.rotation.set(0.42, angle, 0.24);
+        mesh.userData.stageId = stage.id;
+        group.add(mesh);
+        stageMeshes.set(stage.id, mesh);
+        makeBeam(new THREE.Vector3(0, 0.62, 0), position, stage.color);
+
+        const cap = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 12), new THREE.MeshBasicMaterial({ color: 0xcdeede }));
+        cap.position.copy(position).add(new THREE.Vector3(0, 0.72, 0));
+        cap.userData.stageId = stage.id;
+        group.add(cap);
+        stageMeshes.set(`${stage.id}-cap`, cap);
+      });
+
+      const raycaster = new THREE.Raycaster();
+      const pointer = new THREE.Vector2();
+      const clickable = [...stageMeshes.values()];
+
+      renderer.domElement.addEventListener("pointerdown", event => {
+        const rect = renderer.domElement.getBoundingClientRect();
+        pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(pointer, camera);
+        const hit = raycaster.intersectObjects(clickable, false)[0];
+        if (hit?.object?.userData?.stageId) {
+          showAnswer(hit.object.userData.stageId, renderer.domElement);
+        } else {
+          showAnswer("scene", renderer.domElement);
+        }
+      });
+
+      let selectedId = null;
+      highlightStage = id => {
+        selectedId = id;
+      };
+
+      function resize() {
+        const width = mount.clientWidth;
+        const height = mount.clientHeight;
+        if (!width || !height) return;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+      }
+
+      window.addEventListener("resize", resize);
+      resize();
+
+      renderer.setAnimationLoop((time) => {
+        const t = time * 0.001;
+        group.rotation.y = t * 0.13;
+        core.rotation.x = t * 0.9;
+        core.rotation.y = t * 1.2;
+        stageMeshes.forEach(mesh => {
+          if (!mesh.userData.stageId) return;
+          const isSelected = mesh.userData.stageId === selectedId;
+          const pulse = isSelected ? 1.28 + Math.sin(t * 7) * 0.06 : 1 + Math.sin(t * 2 + mesh.position.x) * 0.035;
+          mesh.scale.setScalar(pulse);
+          if (mesh.material?.opacity !== undefined) {
+            mesh.material.transparent = true;
+            mesh.material.opacity = isSelected ? 1 : 0.82;
+          }
+        });
+        renderer.render(scene, camera);
+      });
+    }
+
+    startWebGPU().catch(error => {
+      console.error(error);
+      document.querySelector("#rendererStatus").textContent = "Fallback lesson mode";
+      document.querySelector("#sceneFallback strong").textContent = "WebGPU fallback";
+      document.querySelector("#sceneFallback p").textContent = "The browser could not start the WebGPU scene. All interactive teaching panels still work.";
+      window.__FABLES_CLASSROOM_READY = { backend: "fallback", stageCount: stages.length, questionCount: questions.length, error: String(error?.message || error) };
+    });
+
+    showAnswer("what-is-it");
+  </script>
+</body>
+</html>
