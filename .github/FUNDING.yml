@@ -1,9 +1,5 @@
-<script async
-  src="https://js.stripe.com/v3/buy-button.js">
-</script>
-
-<stripe-buy-button
-  buy-button-id="buy_btn_1Tr3J0FAQDieJDulyZ2YJKUo"
-  publishable-key="pk_live_51Sj9iAFAQDieJDul7FoVEKwxEcyGCZgkDTcRz64i6zAX8j3onCeQnlYS84h3Lq1h0Llc2RXq09LcVtziAGSD0ttY00xcGosaOK"
->
-</stripe-buy-button>
+# GitHub Sponsor button — renders "Sponsor" on the repo page.
+# Links to Dan's Stripe payment link (the same one behind the Stripe buy button
+# buy_btn_1Tr3J0FAQDieJDulyZ2YJKUo; embed HTML lives in the site pages, not here —
+# FUNDING.yml must be YAML).
+custom: ["https://buy.stripe.com/fZu4gzdhhgfve7j7OGfMA0n"]
