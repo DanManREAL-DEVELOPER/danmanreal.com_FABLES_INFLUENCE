@@ -783,6 +783,124 @@
       font-size: 0.88rem;
     }
 
+    .glossary-lab {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .word-stage,
+    .term-rail {
+      padding: 1.35rem 1rem 1rem;
+      min-height: 540px;
+    }
+
+    .word-stage {
+      display: grid;
+      align-content: start;
+      gap: 0.9rem;
+    }
+
+    .word-meter {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.7rem;
+      align-items: center;
+      color: var(--dmr-paint-green);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+    }
+
+    .word-meter i {
+      display: block;
+      width: min(160px, 28vw);
+      height: 10px;
+      background:
+        linear-gradient(90deg, var(--dmr-paint-blue), var(--dmr-paint-green), var(--pink)),
+        rgba(3, 12, 9, 0.8);
+      box-shadow: 0 0 18px rgba(18, 183, 248, 0.24);
+    }
+
+    .word-stage h3 {
+      font-size: clamp(2.25rem, 5vw, 5.1rem);
+      line-height: 0.85;
+    }
+
+    .word-stage p {
+      margin: 0;
+      color: var(--mint);
+      line-height: 1.52;
+    }
+
+    .word-definition {
+      padding: 0.9rem;
+      border-left: 5px solid var(--dmr-paint-blue);
+      background: rgba(3, 12, 9, 0.74);
+      font-size: 1.05rem;
+    }
+
+    .glossary-demo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .demo-tile,
+    .challenge-chip {
+      min-height: 86px;
+      padding: 0.75rem;
+      border: 1px solid rgba(177, 139, 78, 0.55);
+      border-radius: 0;
+      background: rgba(3, 12, 9, 0.72);
+      color: var(--mint);
+      text-align: left;
+      line-height: 1.36;
+    }
+
+    .demo-tile strong,
+    .challenge-chip strong {
+      display: block;
+      color: var(--ink);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .term-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .term-card {
+      min-height: 126px;
+    }
+
+    .term-card.is-active {
+      border-color: var(--dmr-paint-green);
+      box-shadow:
+        inset 0 0 0 1px rgba(38, 242, 150, 0.46),
+        0 0 24px rgba(38, 242, 150, 0.14);
+    }
+
+    .glossary-source-row,
+    .glossary-challenges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+
+    .glossary-challenges {
+      margin-top: 1rem;
+    }
+
+    .challenge-chip {
+      flex: 1 1 220px;
+      min-height: 74px;
+    }
+
     .generated-strip {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -923,7 +1041,8 @@
       .hero,
       .stage-shell,
       .lesson-board,
-      .question-lab {
+      .question-lab,
+      .glossary-lab {
         grid-template-columns: 1fr;
       }
 
@@ -969,8 +1088,15 @@
       .card-grid,
       .generated-strip,
       .two-col,
-      .question-bank {
+      .question-bank,
+      .glossary-demo-grid,
+      .term-grid {
         grid-template-columns: 1fr;
+      }
+
+      .word-stage,
+      .term-rail {
+        min-height: auto;
       }
 
       .section-heading {
@@ -1186,12 +1312,33 @@
       <div class="section-heading">
         <div>
           <div class="kicker">VII. Glossary</div>
-          <h2>Words Kids Will Ask About</h2>
-          <p>Click a word when a student asks what it means. The answer panel gives a simple definition and a teacher bridge.</p>
+          <h2>Word Lab</h2>
+          <p>Click a word and the lab becomes a mini lesson: kid answer, teacher bridge, classroom demo, connected source files, and quick checks you can throw back to the class.</p>
         </div>
-        <button class="ghost-button" data-answer="glossary">Open glossary answer</button>
+        <button class="ghost-button" data-answer="glossary">Run word lab</button>
       </div>
-      <div class="card-grid" id="termGrid"></div>
+      <div class="glossary-lab">
+        <aside class="word-stage metal-frame" id="glossaryStage" aria-live="polite">
+          <span class="jewel tl"></span><span class="jewel tr"></span><span class="jewel bl"></span><span class="jewel br"></span>
+          <div class="paint-rail"><span></span><span></span><span></span><span></span><i></i><i></i><i></i></div>
+          <div class="word-meter"><span id="glossaryMode">Word lab ready</span><i aria-hidden="true"></i></div>
+          <h3 id="glossaryTitle">Harness</h3>
+          <p class="word-definition" id="glossaryDefinition">A folder that wraps a project with instructions, status, ledgers, wargames, and a verifier.</p>
+          <div class="glossary-demo-grid">
+            <button class="demo-tile" data-answer="term-harness" id="glossaryKidTile"><strong>Say it to a kid</strong><span id="glossaryKid">A harness is a project backpack that keeps every tool in the right pocket.</span></button>
+            <button class="demo-tile" data-answer="term-harness" id="glossaryTeacherTile"><strong>Teacher bridge</strong><span id="glossaryTeacher">Connect the word to the actual generated FABLES_HARNESS folder.</span></button>
+            <button class="demo-tile" data-answer="term-harness" id="glossaryDemoTile"><strong>30-second demo</strong><span id="glossaryDemo">Ask students what happens when a backpack has no labels, then show why files need roles.</span></button>
+            <button class="demo-tile" data-answer="term-harness" id="glossaryMistakeTile"><strong>Common mix-up</strong><span id="glossaryMistake">A harness is not the finished project. It is the control kit around the project.</span></button>
+          </div>
+          <div class="glossary-source-row" id="glossarySources"></div>
+          <div class="glossary-challenges" id="glossaryChallenges"></div>
+        </aside>
+        <div class="term-rail metal-frame">
+          <span class="jewel tl"></span><span class="jewel tr"></span><span class="jewel bl"></span><span class="jewel br"></span>
+          <div class="paint-rail"><span></span><span></span><span></span><span></span><i></i><i></i><i></i></div>
+          <div class="term-grid" id="termGrid"></div>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="questions">
@@ -1429,15 +1576,114 @@
     ];
 
     const terms = [
-      ["Harness", "A folder that wraps a project with instructions, status, ledgers, wargames, and a verifier.", "term-harness"],
-      ["Playbook", "The clickable list of prompt blocks that tells an AI what to do next.", "term-playbook"],
-      ["Ledger", "A durable notebook file that remembers evidence, choices, and handoffs.", "term-ledger"],
-      ["Wargame", "A pretend battle against mistakes before real work begins.", "term-wargame"],
-      ["Verifier", "A checker command that proves files agree with the spec.", "term-verifier"],
-      ["Owner decision", "A question the AI must ask the human instead of inventing.", "term-owner"],
-      ["Evidence", "A file, command output, screenshot, or artifact that proves a claim.", "term-evidence"],
-      ["Builder block", "A prompt block that asks an AI to create or change something.", "term-builder"],
-      ["Auditor block", "A read-only prompt block that checks the builder's claim.", "term-auditor"]
+      {
+        id: "term-harness",
+        name: "Harness",
+        zone: "Control room",
+        definition: "A folder that wraps a project with instructions, status, ledgers, wargames, and a verifier.",
+        kid: "A harness is a project backpack. It keeps the map, checklist, notebooks, and safety tools together.",
+        teacher: "Point to generated FABLES_HARNESS: it is the control room around the target project, not the finished project itself.",
+        demo: "Ask: if your backpack has no labels, how long until homework gets lost? Then show why each harness file has a job.",
+        mistake: "Common mix-up: students may think the harness is the app. Correct it: the harness helps finish the app.",
+        source: [sources.harness, sources.start],
+        challenges: ["Name three tools inside the backpack.", "What would get lost without the harness?", "Is the harness the project or the helper around it?"]
+      },
+      {
+        id: "term-playbook",
+        name: "Playbook",
+        zone: "Mission cards",
+        definition: "The clickable list of prompt blocks that tells an AI what to do next.",
+        kid: "A playbook is like level cards in a game. Each card tells the helper the next mission.",
+        teacher: "Connect it to FABLE_PROMPT_PLAYBOOK.html and the JSON twin. The same mission can be read by humans and machines.",
+        demo: "Have one student be the builder and one be the auditor. Hand them mission cards in order.",
+        mistake: "Common mix-up: a playbook is not random notes. It is an ordered set of copyable blocks.",
+        source: [sources.playbook],
+        challenges: ["Why are the blocks in order?", "What happens if we skip a mission card?", "Who uses the playbook: human, AI, or both?"]
+      },
+      {
+        id: "term-ledger",
+        name: "Ledger",
+        zone: "Memory notebook",
+        definition: "A durable notebook file that remembers evidence, choices, and handoffs.",
+        kid: "A ledger is the class notebook that does not forget what happened yesterday.",
+        teacher: "Use the five ledger templates: evidence, owner decisions, handoff, re-entry, and pre-block sanity.",
+        demo: "Ask a student to leave the room, tell the class a rule, write it down, then bring the student back and show why the notebook matters.",
+        mistake: "Common mix-up: chat memory is not a ledger. A ledger is a file future helpers can open.",
+        source: [sources.ledgers],
+        challenges: ["What should go in the evidence ledger?", "Why is a file better than memory?", "Which ledger helps tomorrow's helper?"]
+      },
+      {
+        id: "term-wargame",
+        name: "Wargame",
+        zone: "Failure practice",
+        definition: "A pretend battle against mistakes before real work begins.",
+        kid: "A wargame is practice for what could go wrong, like checking your bike brakes before a race.",
+        teacher: "This is the safest way to teach failure: predict the likely mistake, then write the counter-move before execution.",
+        demo: "Pick a lemonade stand website and ask: what could the AI forget? Prices, pictures, mobile view, or proof.",
+        mistake: "Common mix-up: wargame does not mean fighting people. It means testing the plan against problems.",
+        source: [sources.wargames],
+        challenges: ["What could go wrong if we build too fast?", "What counter-move would you write?", "Why practice failure before working?"]
+      },
+      {
+        id: "term-verifier",
+        name: "Verifier",
+        zone: "Checker",
+        definition: "A checker command that proves files agree with the spec.",
+        kid: "A verifier is the referee. It checks the scoreboard instead of trusting someone shouting 'we won.'",
+        teacher: "Tie it to verify_bundle.py: HTML, JSON, status, and hashes must agree.",
+        demo: "Have the class count blocks on two lists. If the counts disagree, the verifier catches it.",
+        mistake: "Common mix-up: a verifier does not make the project better by itself. It proves whether the required pieces match.",
+        source: [sources.harness, "template/verify_bundle.py"],
+        challenges: ["What does the verifier check?", "Why is proof stronger than a promise?", "When should we run the checker?"]
+      },
+      {
+        id: "term-owner",
+        name: "Owner decision",
+        zone: "Human choice",
+        definition: "A question the AI must ask the human instead of inventing.",
+        kid: "An owner decision is a raised hand moment. The robot must ask the human because only the human knows the answer.",
+        teacher: "Use this to teach safe stopping. The AI should not invent goals, approvals, secrets, or product choices.",
+        demo: "Ask whether the class mascot should be blue or green. Only the class owner can choose, not the robot.",
+        mistake: "Common mix-up: stopping is not failing. Stopping can be the safest correct move.",
+        source: [sources.ledgers, sources.harness],
+        challenges: ["Name a question only the owner can answer.", "Why is guessing dangerous?", "Where should the answer be recorded?"]
+      },
+      {
+        id: "term-evidence",
+        name: "Evidence",
+        zone: "Proof pile",
+        definition: "A file, command output, screenshot, or artifact that proves a claim.",
+        kid: "Evidence is the receipt. If someone says the cake is baked, evidence is the picture, timer, or slice.",
+        teacher: "Return to the core rule: done means artifacts exist and proof covers the claim.",
+        demo: "Say 'I cleaned the board' while it is dirty, then clean it and show the visible proof.",
+        mistake: "Common mix-up: confidence is not evidence. A command, file, screenshot, or checked artifact is evidence.",
+        source: [sources.ledgers, sources.readme],
+        challenges: ["What proof would show a website works?", "Can a sentence be enough proof?", "Where does evidence get written down?"]
+      },
+      {
+        id: "term-builder",
+        name: "Builder block",
+        zone: "Maker turn",
+        definition: "A prompt block that asks an AI to create or change something.",
+        kid: "The builder block is the maker's turn. It says what to build and what not to break.",
+        teacher: "Builder blocks should be paired with auditor blocks so creation and checking stay separate.",
+        demo: "Have one student draw a simple map from instructions while another waits to inspect it.",
+        mistake: "Common mix-up: a builder block is not free play. It has fences, outputs, and proof expectations.",
+        source: [sources.playbook],
+        challenges: ["What should a builder know before starting?", "Why give must-not rules?", "What proof should a builder leave?"]
+      },
+      {
+        id: "term-auditor",
+        name: "Auditor block",
+        zone: "Checker turn",
+        definition: "A read-only prompt block that checks the builder's claim.",
+        kid: "The auditor block is the checker friend's turn. It looks but does not secretly change the work.",
+        teacher: "This teaches review discipline: first inspect, then report findings with evidence.",
+        demo: "One student builds a paper tower. Another can only inspect and say what is strong or weak.",
+        mistake: "Common mix-up: an auditor is not another builder. The first job is to check without changing.",
+        source: [sources.playbook, sources.wargames],
+        challenges: ["Why should the auditor stay read-only?", "What should the auditor cite?", "When can checking become fixing?"]
+      }
     ];
 
     const lessons = [
@@ -1468,7 +1714,7 @@
       "files": ["Files overview", "The files are roles in the backpack: README explains, START_HERE tours, GENESIS_PROMPT launches, templates define output, ledgers remember, wargames test, design skill dresses the work.", "Do not teach file names as trivia. Teach the role each file plays in the system.", "Use when students ask 'why so many files?'", [sources.readme, sources.start]],
       "generated-harness": ["Generated harness", "FABLES_HARNESS is the control room folder the AI creates inside the target project.", "It contains the human cockpit, interactive prompt playbook, JSON prompt twin, execution status, ledgers, meta-control prompts, wargames, and verifier.", "Use when the class asks what the kit produces.", [sources.harness]],
       "use-cases": ["Use cases", "Use the method for big projects that need planning, proof, handoff, and safe AI help.", "The kit is project-agnostic: it can wrap code, content, audits, reports, lessons, or launch work.", "Use it when guessing would be expensive or confusing.", [sources.catalog, sources.readme]],
-      "glossary": ["Glossary", "The glossary turns grown-up system words into kid-sized definitions.", "Vocabulary is a teaching tool. If a child knows what a ledger, verifier, and owner decision are, the full method becomes much easier.", "Use this section during open questions.", [sources.harness, sources.ledgers]],
+      "glossary": ["Word lab", "The word lab turns grown-up system words into mini lessons with a kid answer, teacher bridge, demo, common mix-up, source files, and quick class checks.", "Use it like a live teaching station: click the term, say the kid line, run the 30-second demo, then ask one challenge question back to the room.", "Use this section whenever a student asks 'what does that word mean?' or when the class needs a fast reset.", [sources.harness, sources.ledgers, sources.playbook]],
       "questions": ["Question engine", "The question board gives many clickable questions so a class can ask fast without derailing the lesson.", "It has 10 topics and 50 generated chips per topic. The answer panel gives short explanations tied back to the project.", "Use search when students ask with different words.", ["This HTML artifact"]],
       "question-bank-size": ["Why 500 questions?", "Ten students with many questions can repeat the same idea in different ways. A big bank helps you answer quickly.", "The point is coverage, not reading every chip. Search and topic filters make the bank usable live.", "Use it as a teacher safety net.", ["This HTML artifact"]],
       "topbar": ["Navigation bar", "The top bar jumps to the map, steps, files, and question board.", "Keep it sticky so the teacher can recover quickly during a noisy class.", "Use when you need to move without scrolling a long page.", ["This HTML artifact"]],
@@ -1490,8 +1736,16 @@
       answerMap[id] = [name, `Yes. The method can help with this because it turns a big job into ordered blocks, proof, ledgers, and handoff notes.`, `Teacher note: ${text}`, "Use the same harness pattern whenever the project needs safe multi-step AI work.", [sources.catalog, sources.readme]];
     });
 
-    terms.forEach(([name, text, id]) => {
-      answerMap[id] = [name, text, `Teacher bridge: ask students to name where this object appears in the backpack or generated harness.`, "Use the word when explaining how the system remembers and proves work.", [sources.harness]];
+    const glossaryById = new Map(terms.map(term => [term.id, term]));
+
+    terms.forEach(term => {
+      answerMap[term.id] = [
+        term.name,
+        term.kid,
+        `${term.teacher} Mini-demo: ${term.demo}`,
+        term.mistake,
+        term.source
+      ];
     });
 
     lessons.forEach(([time, title, text, id]) => {
@@ -1537,13 +1791,55 @@
     });
 
     const termGrid = document.querySelector("#termGrid");
-    terms.forEach(([name, text, id]) => {
+    terms.forEach(term => {
       const card = document.createElement("button");
       card.className = "term-card";
-      card.dataset.answer = id;
-      card.innerHTML = `<span class="card-label">Glossary</span><strong>${name}</strong><span>${text}</span>`;
+      card.dataset.answer = term.id;
+      card.dataset.termId = term.id;
+      card.innerHTML = `<span class="card-label">${term.zone}</span><strong>${term.name}</strong><span>${term.definition}</span>`;
       termGrid.appendChild(card);
     });
+
+    function renderGlossary(termId) {
+      const term = glossaryById.get(termId) || terms[0];
+      document.querySelector("#glossaryMode").textContent = `${term.zone} word`;
+      document.querySelector("#glossaryTitle").textContent = term.name;
+      document.querySelector("#glossaryDefinition").textContent = term.definition;
+      document.querySelector("#glossaryKid").textContent = term.kid;
+      document.querySelector("#glossaryTeacher").textContent = term.teacher;
+      document.querySelector("#glossaryDemo").textContent = term.demo;
+      document.querySelector("#glossaryMistake").textContent = term.mistake;
+
+      document.querySelectorAll(".term-card").forEach(card => {
+        card.classList.toggle("is-active", card.dataset.termId === term.id);
+      });
+
+      ["#glossaryKidTile", "#glossaryTeacherTile", "#glossaryDemoTile", "#glossaryMistakeTile"].forEach(selector => {
+        document.querySelector(selector).dataset.answer = term.id;
+      });
+
+      const sourcesEl = document.querySelector("#glossarySources");
+      sourcesEl.innerHTML = "";
+      term.source.forEach(source => {
+        const pill = document.createElement("button");
+        pill.type = "button";
+        pill.className = "source-pill";
+        pill.dataset.answer = term.id;
+        pill.textContent = source;
+        sourcesEl.appendChild(pill);
+      });
+
+      const challengesEl = document.querySelector("#glossaryChallenges");
+      challengesEl.innerHTML = "";
+      term.challenges.forEach((challenge, index) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "challenge-chip";
+        chip.dataset.answer = term.id;
+        chip.innerHTML = `<strong>Class check ${index + 1}</strong>${challenge}`;
+        challengesEl.appendChild(chip);
+      });
+    }
 
     const lessonList = document.querySelector("#lessonList");
     lessons.forEach(([time, title, text, id]) => {
@@ -1574,6 +1870,9 @@
       document.querySelectorAll(".stage-button").forEach(button => {
         button.classList.toggle("is-active", button.dataset.answer === key);
       });
+      if (glossaryById.has(key)) {
+        renderGlossary(key);
+      }
       highlightStage(key);
     }
 
@@ -1867,6 +2166,7 @@
       window.__FABLES_CLASSROOM_READY = { backend: "fallback", stageCount: stages.length, questionCount: questions.length, error: String(error?.message || error) };
     });
 
+    renderGlossary("term-harness");
     showAnswer("what-is-it");
   </script>
 </body>
