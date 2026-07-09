@@ -1,0 +1,24 @@
+{
+  "browser": "Chrome/150.0.7871.46",
+  "state": {
+    "ready": {
+      "backend": "webgpu",
+      "stageCount": 12,
+      "questionCount": 500
+    },
+    "backend": "webgpu",
+    "renderer": "Three.js WebGPU running",
+    "canvas": [
+      {
+        "w": 816,
+        "h": 636,
+        "clientW": 816,
+        "clientH": 636
+      }
+    ],
+    "termCards": 9,
+    "uses": 18,
+    "questions": 500
+  },
+  "events": []
+}

@@ -1,0 +1,418 @@
+{
+  "htmlPath": "/home/mahan/danmanreal.com_MAIN/danmanreal.com_FABLES_INFLUENCE/FABLES_INFLUENCE_CLASSROOM_WALKTHROUGH.html",
+  "proofDir": "/tmp/fables-classroom-proof",
+  "passed": 52,
+  "results": [
+    {
+      "name": "html file exists",
+      "status": "PASS",
+      "details": {
+        "htmlPath": "/home/mahan/danmanreal.com_MAIN/danmanreal.com_FABLES_INFLUENCE/FABLES_INFLUENCE_CLASSROOM_WALKTHROUGH.html"
+      }
+    },
+    {
+      "name": "html is substantial",
+      "status": "PASS",
+      "details": {
+        "bytes": 92319
+      }
+    },
+    {
+      "name": "html is ASCII",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "no TODO/FIXME markers",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "no obvious secret literals",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "module syntax",
+      "status": "PASS",
+      "details": {
+        "stderr": ""
+      }
+    },
+    {
+      "name": "section #home",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "section #map",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "section #steps",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "section #files",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "section #generated",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "section #uses",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "section #teacher",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "section #glossary",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "section #questions",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes 10-year-old answer",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes Say it to a kid",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes Teacher bridge",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes 30-second demo",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes Common mix-up",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes Question Engine",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes FABLES_HARNESS",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes verify_bundle.py",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes GENESIS_PROMPT.md",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes DanManREAL DESIGN",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "copy includes Three.js WebGPU running",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL token --dmr-brand-blue",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL token --dmr-brand-green",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL token --dmr-paint-blue",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL token --dmr-paint-green",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL token --dmr-frame-metal",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL token --dmr-frame-metal-bright",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL token --dmr-jewel-blue",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL token --dmr-jewel-depth",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL token --dmr-bg-abyss",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL token --dmr-frame-charcoal",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "DanManREAL frame primitives",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "Three.js WebGPU wiring",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "local server",
+      "status": "PASS",
+      "details": {
+        "url": "http://127.0.0.1:40481/FABLES_INFLUENCE_CLASSROOM_WALKTHROUGH.html"
+      }
+    },
+    {
+      "name": "runtime no console errors",
+      "status": "PASS",
+      "details": {
+        "events": []
+      }
+    },
+    {
+      "name": "runtime ready object",
+      "status": "PASS",
+      "details": {
+        "ready": {
+          "backend": "webgpu",
+          "stageCount": 12,
+          "questionCount": 500
+        }
+      }
+    },
+    {
+      "name": "runtime WebGPU or explicit fallback",
+      "status": "PASS",
+      "details": {
+        "backend": "webgpu"
+      }
+    },
+    {
+      "name": "renderer text",
+      "status": "PASS",
+      "details": {
+        "renderer": "Three.js WebGPU running"
+      }
+    },
+    {
+      "name": "WebGPU canvas nonzero",
+      "status": "PASS",
+      "details": {
+        "canvas": [
+          {
+            "w": 807,
+            "h": 639,
+            "clientW": 807,
+            "clientH": 639
+          }
+        ]
+      }
+    },
+    {
+      "name": "runtime counts",
+      "status": "PASS",
+      "details": {
+        "sections": 9,
+        "stages": 12,
+        "files": 12,
+        "generated": 8,
+        "uses": 18,
+        "lessons": 7,
+        "terms": 9,
+        "topics": 11,
+        "visibleQuestions": 59,
+        "questionCount": 500
+      }
+    },
+    {
+      "name": "all stage clicks answer",
+      "status": "PASS",
+      "details": {
+        "stageResults": [
+          {
+            "id": "download-kit",
+            "title": "Download the kit"
+          },
+          {
+            "id": "choose-project",
+            "title": "Pick the target project"
+          },
+          {
+            "id": "paste-genesis",
+            "title": "Paste GENESIS_PROMPT"
+          },
+          {
+            "id": "owner-questions",
+            "title": "Ask owner questions"
+          },
+          {
+            "id": "read-project",
+            "title": "Read the real project"
+          },
+          {
+            "id": "build-harness",
+            "title": "Build FABLES_HARNESS"
+          },
+          {
+            "id": "playbook",
+            "title": "Open the playbook"
+          },
+          {
+            "id": "builder-auditor",
+            "title": "Run builder and auditor blocks"
+          },
+          {
+            "id": "ledgers",
+            "title": "Update ledgers"
+          },
+          {
+            "id": "wargame",
+            "title": "Wargame the plan"
+          },
+          {
+            "id": "verify",
+            "title": "Run verify_bundle.py"
+          },
+          {
+            "id": "handoff",
+            "title": "Hand off with proof"
+          }
+        ]
+      }
+    },
+    {
+      "name": "all file cards answer",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "all generated cards answer",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "all use cases answer",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "glossary word lab interaction",
+      "status": "PASS",
+      "details": {
+        "title": "Verifier",
+        "kid": "A verifier is the referee. It checks the scoreboard instead of trusting someone shouting 'we won.'",
+        "demo": "Have the class count blocks on two lists. If the counts disagree, the verifier catches it.",
+        "mistake": "Common mix-up: a verifier does not make the project better by itself. It proves whether the required pieces match.",
+        "sources": 2,
+        "challenges": 3,
+        "answerTitle": "Verifier"
+      }
+    },
+    {
+      "name": "question search interaction",
+      "status": "PASS",
+      "details": {
+        "visible": 59,
+        "title": "How do wargames connect to what the project is?",
+        "kicker": "Student question"
+      }
+    },
+    {
+      "name": "all section screenshots saved",
+      "status": "PASS",
+      "details": {
+        "screenshots": [
+          {
+            "id": "home",
+            "file": "/tmp/fables-classroom-proof/01-home.png",
+            "bytes": 759511
+          },
+          {
+            "id": "map",
+            "file": "/tmp/fables-classroom-proof/02-map.png",
+            "bytes": 720528
+          },
+          {
+            "id": "steps",
+            "file": "/tmp/fables-classroom-proof/03-steps.png",
+            "bytes": 563953
+          },
+          {
+            "id": "files",
+            "file": "/tmp/fables-classroom-proof/04-files.png",
+            "bytes": 765700
+          },
+          {
+            "id": "generated",
+            "file": "/tmp/fables-classroom-proof/05-generated.png",
+            "bytes": 445185
+          },
+          {
+            "id": "uses",
+            "file": "/tmp/fables-classroom-proof/06-uses.png",
+            "bytes": 800163
+          },
+          {
+            "id": "teacher",
+            "file": "/tmp/fables-classroom-proof/07-teacher.png",
+            "bytes": 946012
+          },
+          {
+            "id": "glossary",
+            "file": "/tmp/fables-classroom-proof/08-glossary.png",
+            "bytes": 910955
+          },
+          {
+            "id": "questions",
+            "file": "/tmp/fables-classroom-proof/09-questions.png",
+            "bytes": 849716
+          }
+        ]
+      }
+    }
+  ]
+}
