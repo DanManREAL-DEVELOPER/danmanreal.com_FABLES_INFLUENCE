@@ -2025,6 +2025,26 @@
 
     renderQuestions();
 
+    function refreshAuditSnapshot() {
+      window.__FABLES_CLASSROOM_AUDIT = {
+        sections: [...document.querySelectorAll("section[id]")].map(section => section.id),
+        answerKeys: Object.keys(answerMap),
+        domAnswerKeys: [...new Set([...document.querySelectorAll("[data-answer]")].map(node => node.dataset.answer).filter(Boolean))],
+        stageIds: stages.map(stage => stage.id),
+        fileIds: files.map(file => file[3]),
+        generatedIds: generated.map(item => item[3]),
+        useCaseIds: useCases.map(item => item[2]),
+        termIds: terms.map(term => term.id),
+        lessonIds: lessons.map(lesson => lesson[3]),
+        sourceFiles: Object.values(sources),
+        questionCount: questions.length,
+        topicCount: questionTopics.length,
+        kidAnswers: Object.fromEntries(Object.entries(answerMap).map(([key, value]) => [key, value[1] || ""]))
+      };
+    }
+
+    refreshAuditSnapshot();
+
     let stageMeshes = new Map();
     let highlightStage = () => {};
 
