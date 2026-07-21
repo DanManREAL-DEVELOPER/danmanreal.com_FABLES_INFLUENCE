@@ -17,7 +17,8 @@ evidence index.
 1. Read `FABLE_START_HERE.md` and follow its reading order before touching anything.
 2. Open items that bit us this run (update as they accumulate):
    - (none yet)
-3. Owner gates currently blocking work: see `ledgers/FABLE_OWNER_DECISIONS.md` OPEN rows.
+3. Owner-gate check: if `ledgers/FABLE_OWNER_DECISIONS.md` has unresolved rows, only
+   their named blocks stop; otherwise write `none`.
 
 ## Do-not list (carry forward every session)
 
