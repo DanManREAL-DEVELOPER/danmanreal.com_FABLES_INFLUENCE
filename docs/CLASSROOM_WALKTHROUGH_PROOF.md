@@ -1,8 +1,10 @@
 # FABLES_INFLUENCE Classroom Walkthrough Proof
 
-This is the current proof packet for `FABLES_INFLUENCE_CLASSROOM_WALKTHROUGH.html`.
+This is the preserved historical July 2026 proof packet for `FABLES_INFLUENCE_CLASSROOM_WALKTHROUGH.html`.
 
-Dan's approval is still required before this work is considered done. This report proves the current state; it does not close the goal.
+`RELEASE_TASKS.md` records the public release completed on 2026-07-20. This packet
+preserves the earlier observations; it is not current runtime evidence or an unresolved
+release-approval request. Re-run the verifier for current local evidence.
 
 ## Artifact Under Test
 
@@ -12,7 +14,7 @@ Dan's approval is still required before this work is considered done. This repor
 
 ## What Was Proven
 
-The verifier proves:
+That historical run recorded:
 
 - The HTML exists, is substantial, ASCII, and has no TODO/FIXME markers.
 - The module script parses successfully with `node --check`.
@@ -106,8 +108,14 @@ The contact sheet covers the full page flow:
 
 The real-GPU screenshot is separate because headless Chrome can render the DOM while failing to composite a true WebGPU canvas. The rtx-eyes proof uses Windows Chrome with the real GPU.
 
-## Current Limits
+## Evidence limits and current rerun
 
-- This is not marked final until Dan approves.
-- The local server is currently expected at `http://127.0.0.1:4458/FABLES_INFLUENCE_CLASSROOM_WALKTHROUGH.html`.
-- The raw per-section screenshots from the verifier are in `/tmp/fables-classroom-proof/`; the durable repo copy keeps the contact sheet plus real-GPU evidence.
+- The recorded URL and temporary directory were historical; no server is promised there.
+- `node scripts/verify_classroom_walkthrough.mjs` now runs an isolated, offline fallback
+  proof with a unique temporary proof directory printed in its JSON output. It serves
+  only the classroom HTML on an owned loopback port and closes its own Chrome process.
+- That portable command does not revalidate real-GPU pixels. The preserved Windows GPU
+  images remain historical evidence for the revision originally captured.
+- Optional graphics require a browser with WebGPU and its Three.js CDN; the teaching
+  controls also initialize without that resource. Reduced-motion mode uses the lesson
+  fallback without loading graphics.

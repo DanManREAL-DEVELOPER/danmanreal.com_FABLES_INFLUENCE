@@ -1,9 +1,13 @@
 # HARNESS_SPEC — the authoritative contract
 
 Audience: the agent (Fable) instantiating this kit for an owner's project.
-Status: **exact contract**. `verify_bundle.py` enforces the schemas below verbatim — build
-to them, byte for byte where stated. If your generated harness fails the verifier, fix the
-harness, never the verifier.
+Status: **generation contract**. Build to the shapes below, byte for byte where stated.
+`verify_bundle.py` checks bounded structural integrity: required files, supported schema
+version, project identity, block fields/order/hashes, HTML twins and controls, status
+metadata, next-block and owner-gate consistency. It does not implement a complete JSON
+Schema validator, execute prompts, establish evidence adequacy, or certify a project
+finished. Review those semantic requirements separately. If a generated harness fails,
+fix that harness; do not weaken its copied verifier to hide the defect.
 
 ## Output layout (generated at the owner's project root)
 
@@ -37,9 +41,10 @@ Templates use `{{DOUBLE_BRACE}}` placeholders. Two kinds — do not confuse them
   `{{GENERATED_AT}}`, `{{NEXT_BLOCK}}`…): you MUST resolve these while generating. None may
   survive into the generated harness — the verifier greps for them.
 - **Owner-gate placeholders** (`{{OWNER:*}}`, e.g. `{{OWNER:PUBLIC_PUSH_GO}}`,
-  `{{OWNER:SPEND_LIMIT}}`): you MUST NOT resolve these. They mark values only the owner may
-  supply. They survive in block text and wargames, and any block containing an unresolved
-  owner gate carries status `blocked_on_owner`.
+  `{{OWNER:SPEND_LIMIT}}`): resolve these only from an actual owner decision,
+  recorded with provenance in the decision ledger; never invent the value. Until then,
+  affected active blocks carry status `blocked_on_owner`. An owner-approved superseded
+  block requires its skip evidence and is not an active gate.
 
 ## Compiling the playbook
 
@@ -50,9 +55,9 @@ catalog sections the owner accepts).
 Rules:
 
 1. **Blocks are ordered, atomic, and executor-blind.** One block = one session-sized
-   mission with observable end-state, exact paths, and verification commands. A mid-tier
-   model must be able to run it without asking a question. Unknowables → owner-gate
-   placeholders, never guesses.
+   mission with observable end-state, relevant paths, verification evidence, and scope
+   boundaries sufficient for a fresh session. Ask only when missing information
+   materially changes the work. Owner-only unknowns become named gate placeholders.
 2. **Builder/auditor pairing.** Every builder block (`role: "fable_builder"`) is followed
    by a read-only auditor block (`role: "auditor"`) that verifies the builder's claimed
    evidence against disk, into the evidence ledger. Auditor blocks must forbid writes
@@ -155,8 +160,9 @@ Use `template/EXECUTION_STATUS.template.json` as the skeleton. Laws:
 
 1. `python3 FABLES_HARNESS/verify_bundle.py` exits **0**.
 2. No generation placeholder survives anywhere in `FABLES_HARNESS/`.
-3. Every `{{OWNER:*}}` placeholder appears in `current_state.blocked_on_owner` and in
-   `ledgers/FABLE_OWNER_DECISIONS.md` as an OPEN row.
+3. Every unresolved owner placeholder on an active block appears with exactly its
+   affected block IDs in `current_state.blocked_on_owner`, and has an OPEN decision row.
+   Preserve owner-approved skip evidence for superseded blocks.
 4. The playbook HTML opens from disk with no network access and renders every block.
 5. Handoff message to the owner names: the START_HERE path, the exact next block, all
    owner gates, all placeholders.

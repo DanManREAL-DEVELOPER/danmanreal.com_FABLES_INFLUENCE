@@ -14,9 +14,11 @@ human-facing twin of `FABLE_PROMPT_PLAYBOOK.json` — same blocks, same text, sa
 1. **Self-contained.** Zero network dependencies: no CDN scripts, no external stylesheets,
    fonts, or images, no `fetch`/`XMLHttpRequest`/dynamic `import(`. Plain hyperlinks
    (`<a href="https://…">`) are allowed — a link the owner may click is not a loaded
-   resource. Outside `href` attributes, the only `http(s)` strings permitted are
-   `www.w3.org` XML namespaces inside inline SVG. Everything inline; images (if any) as
-   data: URIs.
+   resource. Inert prompt text and JSON may quote URLs or command examples. Loaded
+   resources, including relative and protocol-relative URLs, must be inline (images as
+   data: URIs). The verifier parses resource-bearing attributes and scans active scripts
+   and CSS for common networking constructs. This is a bounded integrity check, not a
+   security sandbox or proof against arbitrary executable JavaScript.
 2. **One `<textarea id="block-NN">` per block**, in playbook order, containing the block's
    `text` exactly (HTML-escaped in source; identical to the JSON `text` after unescaping,
    modulo a single leading newline). These textareas are the copy source — the visible

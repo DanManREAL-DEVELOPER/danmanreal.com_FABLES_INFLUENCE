@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 import { createServer } from "node:http";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, extname, join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const htmlPath = join(repoRoot, "FABLES_INFLUENCE_CLASSROOM_WALKTHROUGH.html");
-const proofDir = join(tmpdir(), "fables-classroom-proof");
+const proofDir = mkdtempSync(join(tmpdir(), "fables-classroom-proof-"));
 const results = [];
 
 function record(name, details = {}) {
@@ -45,35 +45,42 @@ async function listen(server) {
   return server.address().port;
 }
 
-function contentType(file) {
-  const ext = extname(file);
-  if (ext === ".html") return "text/html; charset=utf-8";
-  if (ext === ".svg") return "image/svg+xml";
-  if (ext === ".png") return "image/png";
-  if (ext === ".css") return "text/css; charset=utf-8";
-  if (ext === ".js" || ext === ".mjs") return "text/javascript; charset=utf-8";
-  return "application/octet-stream";
-}
-
 function startServer() {
-  const server = createServer((req, res) => {
+  return createServer((req, res) => {
     try {
-      const url = new URL(req.url || "/", "http://127.0.0.1");
-      const requested = url.pathname === "/" ? "/FABLES_INFLUENCE_CLASSROOM_WALKTHROUGH.html" : decodeURIComponent(url.pathname);
-      const file = resolve(repoRoot, requested.replace(/^\/+/, ""));
-      if (!file.startsWith(repoRoot) || !existsSync(file) || statSync(file).isDirectory()) {
-        res.writeHead(404);
-        res.end("not found");
-        return;
+      const requested = decodeURIComponent(new URL(req.url || "/", "http://127.0.0.1").pathname);
+      if (!["/", "/FABLES_INFLUENCE_CLASSROOM_WALKTHROUGH.html"].includes(requested)) {
+        res.writeHead(404); res.end("not found"); return;
       }
-      res.writeHead(200, { "content-type": contentType(file) });
-      res.end(readFileSync(file));
-    } catch (error) {
-      res.writeHead(500);
-      res.end(String(error?.message || error));
+      res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+      res.end(readFileSync(htmlPath));
+    } catch {
+      res.writeHead(400); res.end("bad request");
     }
   });
-  return server;
+}
+
+async function ownDebugPort(profile, proc) {
+  const path = join(profile, "DevToolsActivePort");
+  for (let attempt = 0; attempt < 120; attempt++) {
+    if (proc.exitCode !== null || proc.signalCode !== null) throw new Error("Owned Chrome exited before debugger startup");
+    if (existsSync(path)) {
+      const port = Number(readFileSync(path, "utf8").split("\n")[0]);
+      if (Number.isInteger(port) && port > 0 && port < 65536) return port;
+    }
+    await new Promise(resolveWait => setTimeout(resolveWait, 100));
+  }
+  throw new Error("Owned Chrome debugger startup timed out");
+}
+
+async function stopOwnedChrome(proc) {
+  if (proc.exitCode !== null || proc.signalCode !== null) return;
+  const exited = new Promise(resolveExit => proc.once("exit", resolveExit));
+  proc.kill("SIGTERM");
+  let timer;
+  await Promise.race([exited, new Promise(resolveWait => { timer = setTimeout(resolveWait, 3000); })]);
+  clearTimeout(timer);
+  if (proc.exitCode === null && proc.signalCode === null) { proc.kill("SIGKILL"); await exited; }
 }
 
 async function waitForJson(url, timeoutMs = 12000) {
@@ -102,21 +109,21 @@ function findChrome() {
 
 async function withChrome(pageUrl, fn) {
   const chrome = findChrome();
-  const debugPort = 9300 + Math.floor(Math.random() * 400);
   const profile = mkdtempSync(join(tmpdir(), "fables-proof-chrome-"));
   const proc = spawn(chrome, [
     "--headless=new",
-    `--remote-debugging-port=${debugPort}`,
+    "--remote-debugging-port=0",
     `--user-data-dir=${profile}`,
     "--no-first-run",
     "--noerrdialogs",
     "--disable-gpu-sandbox",
     "--enable-unsafe-webgpu",
     "--window-size=1440,1100",
-    pageUrl
+    "about:blank"
   ], { stdio: "ignore" });
 
   try {
+    const debugPort = await ownDebugPort(profile, proc);
     const version = await waitForJson(`http://127.0.0.1:${debugPort}/json/version`);
     const browserWs = new WebSocket(version.webSocketDebuggerUrl);
     await new Promise((resolveOpen, rejectOpen) => {
@@ -153,7 +160,8 @@ async function withChrome(pageUrl, fn) {
         }, timeout);
         pending.set(call.id, msg => {
           clearTimeout(timer);
-          resolveSend(msg);
+          if (msg.error) rejectSend(new Error(`${method}: ${msg.error.message}`));
+          else resolveSend(msg);
         });
         browserWs.send(JSON.stringify(call));
       });
@@ -166,6 +174,8 @@ async function withChrome(pageUrl, fn) {
       const sessionId = attach.result.sessionId;
       await send("Runtime.enable", {}, sessionId);
       await send("Page.enable", {}, sessionId);
+      // The portable proof is offline. Historical real-GPU proof is a separate artifact.
+      await send("Page.addScriptToEvaluateOnNewDocument", { source: "Object.defineProperty(navigator, 'gpu', {value: undefined});" }, sessionId);
       await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false }, sessionId);
       await send("Page.navigate", { url: pageUrl }, sessionId);
       const output = await fn({ send, sessionId, events, targetId, version });
@@ -177,8 +187,7 @@ async function withChrome(pageUrl, fn) {
       throw error;
     }
   } finally {
-    proc.kill("SIGTERM");
-    await new Promise(resolveWait => setTimeout(resolveWait, 300));
+    await stopOwnedChrome(proc);
     try {
       rmSync(profile, { recursive: true, force: true });
     } catch {
@@ -198,8 +207,6 @@ function screenshotName(index, id) {
 }
 
 async function main() {
-  rmSync(proofDir, { recursive: true, force: true });
-  mkdirSync(proofDir, { recursive: true });
   const html = readFileSync(htmlPath, "utf8");
   const moduleCode = extractModule(html);
 
@@ -209,7 +216,7 @@ async function main() {
   assert("no TODO/FIXME markers", !/TODO|FIXME/.test(html), "unfinished marker found");
   assert("no obvious secret literals", !/(sk-[A-Za-z0-9]|BEGIN [A-Z ]*PRIVATE KEY|AKIA[0-9A-Z]{16}|password\s*=|secret\s*=|token\s*=)/.test(html), "secret-like literal found");
 
-  const moduleFile = join(tmpdir(), "fables-classroom-module-check.mjs");
+  const moduleFile = join(proofDir, "module-check.mjs");
   writeFileSync(moduleFile, moduleCode);
   const syntax = spawnSync(process.execPath, ["--check", moduleFile], { encoding: "utf8" });
   assert("module syntax", syntax.status === 0, "module script syntax failed", { stderr: syntax.stderr.trim() });
@@ -260,6 +267,10 @@ async function main() {
   record("local server", { url });
 
   try {
+    for (const route of ["/.git/config", "/README.md", "/.env", "/%2e%2e%2fother", "/%ZZ"]) {
+      const response = await fetch(`http://127.0.0.1:${port}${route}`);
+      assert(`server refuses ${route}`, [400, 404].includes(response.status), "server exposed an unrelated path");
+    }
     const runtime = await withChrome(url, async ({ send, sessionId, events }) => {
       await send("Runtime.evaluate", {
         expression: `new Promise(resolve => {

@@ -9,3 +9,6 @@ Thumbs.db
 .env
 .env.*
 LAUNCH_KIT.md
+
+# Local audit evidence and interactive project maps
+.project-map/

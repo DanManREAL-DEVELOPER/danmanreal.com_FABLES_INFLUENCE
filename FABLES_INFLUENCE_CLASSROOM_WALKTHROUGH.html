@@ -45,6 +45,7 @@
     }
 
     body {
+      overflow-wrap: anywhere;
       margin: 0;
       min-height: 100vh;
       background:
@@ -1134,7 +1135,7 @@
       <div class="brand-mark" aria-hidden="true"></div>
       <div class="brand-text">
         <strong>FABLES_INFLUENCE</strong>
-        <span>Classroom walkthrough for the project at /home/mahan/danmanreal.com_MAIN/danmanreal.com_FABLES_INFLUENCE</span>
+        <span>Classroom walkthrough for the project at danmanreal.com_FABLES_INFLUENCE</span>
       </div>
     </div>
     <div class="top-actions" aria-label="Class sections">
@@ -1367,7 +1368,7 @@
   </main>
 
   <footer class="footer">
-    <strong>Source path:</strong> /home/mahan/danmanreal.com_MAIN/danmanreal.com_FABLES_INFLUENCE.
+    <strong>Source path:</strong> danmanreal.com_FABLES_INFLUENCE.
     This HTML is an additive teaching artifact for the existing kit. It uses Three.js WebGPU for the system map and keeps all class content clickable.
   </footer>
 
@@ -1381,7 +1382,6 @@
   </script>
 
   <script type="module">
-    import * as THREE from "three/webgpu";
 
     window.addEventListener("unhandledrejection", event => {
       const message = String(event.reason?.message || event.reason || "");
@@ -2053,11 +2053,22 @@
       const fallback = document.querySelector("#sceneFallback");
       const status = document.querySelector("#rendererStatus");
 
-      if (!navigator.gpu || !THREE.WebGPURenderer) {
-        status.textContent = "Fallback lesson mode";
-        window.__FABLES_CLASSROOM_READY = { backend: "fallback", stageCount: stages.length, questionCount: questions.length };
-        return;
+      // The lesson is ready before optional graphics or network access.
+      status.textContent = "Fallback lesson mode";
+      window.__FABLES_CLASSROOM_READY = { backend: "fallback", stageCount: stages.length, questionCount: questions.length };
+      if (!navigator.gpu || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      let importTimer;
+      let THREE;
+      try {
+        THREE = await Promise.race([
+          import("three/webgpu"),
+          new Promise((_, reject) => { importTimer = setTimeout(() => reject(new Error("Optional graphics timed out")), 6000); })
+        ]);
+      } finally {
+        clearTimeout(importTimer);
       }
+      if (!THREE.WebGPURenderer) throw new Error("Optional WebGPU renderer unavailable");
 
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(0x030c09);
@@ -2179,7 +2190,6 @@
     }
 
     startWebGPU().catch(error => {
-      console.error(error);
       document.querySelector("#rendererStatus").textContent = "Fallback lesson mode";
       document.querySelector("#sceneFallback strong").textContent = "WebGPU fallback";
       document.querySelector("#sceneFallback p").textContent = "The browser could not start the WebGPU scene. All interactive teaching panels still work.";

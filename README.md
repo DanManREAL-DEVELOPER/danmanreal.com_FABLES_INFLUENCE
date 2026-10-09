@@ -111,3 +111,24 @@ with it, as long as it's respectful.
 ---
 
 *Built by Fable, with Fable, for us all.* 💙
+
+## Local validation and its limits
+
+Run the verifier's synthetic, standard-library regression suite:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+A zero verifier exit establishes its checked structural consistency, not evidence
+adequacy, arbitrary JavaScript safety, or the owner's project-completion criteria.
+Review those separately. No model or real project harness is executed by these tests.
+The optional classroom graphics use a Three.js CDN; all teaching controls work without
+it. Its portable offline browser proof (Node 22+ and Chrome/Chromium) is:
+
+```bash
+node scripts/verify_classroom_walkthrough.mjs
+```
+
+The command prints its unique proof directory. Historical GPU evidence is documented
+in `docs/CLASSROOM_WALKTHROUGH_PROOF.md`; it is not a claim about today's GPU runtime.

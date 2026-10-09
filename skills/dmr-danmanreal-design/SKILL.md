@@ -42,8 +42,11 @@ PAINT"** — heritage: every early asset was drawn in Microsoft Paint, and the p
 - Keep the chapter grammar (cover → ledger → feature labs → anatomy → voice → moves →
   law → epilogue); drop chapters that don't apply, never reorder the ones kept.
 - Include the `prefers-reduced-motion` block from the exemplar.
-- Verify before handoff: `node Product_Design_Showcase_Template/scripts/check_html_fit.mjs
-  <file>` must pass, and view a screenshot with your own (canary-proven) eyes.
+- Verify before handoff with available isolated browser tooling: check desktop and
+  mobile fit, keyboard operation, reduced motion, and inspect captured screenshots.
+  The workshop-only `Product_Design_Showcase_Template/scripts/check_html_fit.mjs` may be
+  used when present; this public kit does not require that external path. Report any
+  unavailable check. Do not open the owner's browser without their request.
 
 ## What it is NOT
 

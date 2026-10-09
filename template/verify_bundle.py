@@ -16,7 +16,7 @@ fails, fix the harness — never the verifier.
 """
 
 import hashlib
-import html as html_mod
+from html.parser import HTMLParser
 import json
 import os
 import re
@@ -63,7 +63,151 @@ def load_json(path):
         return None
 
 
+def valid_shapes(pb, st):
+    """Fail closed before comparing untrusted generated JSON structures."""
+    for label, value in (("playbook", pb), ("status", st)):
+        if not isinstance(value, dict):
+            hard.append(f"A: {label} must be a JSON object")
+            continue
+        if value.get("schema_version") != "fables-influence-1.0":
+            hard.append(f"A: {label} schema_version is unsupported")
+        if not isinstance(value.get("project_name"), str) or not value["project_name"].strip():
+            hard.append(f"A: {label} project_name is required")
+        blocks = value.get("blocks")
+        if not isinstance(blocks, list) or not blocks:
+            hard.append(f"A: {label} blocks must be a non-empty list")
+            continue
+        fields = ("html_id", "workflow_label", "section_heading", "role", "text_sha256")
+        if label == "playbook":
+            fields += ("text",)
+        else:
+            fields += ("status",)
+        for index, block in enumerate(blocks):
+            if not isinstance(block, dict) or any(not isinstance(block.get(k), str) for k in fields):
+                hard.append(f"A: {label} block {index + 1} has invalid fields")
+            elif label == "playbook" and any(type(block.get(k)) is not int for k in ("block_index", "text_line_count", "text_char_count")):
+                hard.append(f"A: playbook block {index + 1} counts must be integers")
+            elif label == "status":
+                ev = block.get("evidence")
+                if ev is not None and not isinstance(ev, str) and not (isinstance(ev, list) and all(isinstance(x, str) and x.strip() for x in ev)):
+                    hard.append(f"A: status block {index + 1} evidence must be text or a list of references")
+    if hard:
+        return False
+    if pb["project_name"] != st["project_name"]:
+        hard.append("A: playbook and status belong to different projects")
+    if not isinstance(pb.get("sections"), list) or not all(isinstance(x, str) for x in pb["sections"]):
+        hard.append("A: sections must be a list of headings")
+    current = st.get("current_state")
+    if not isinstance(current, dict):
+        hard.append("A: current_state must be an object")
+    else:
+        if not isinstance(current.get("current_next_block"), dict):
+            hard.append("A: current_next_block must be an object (empty when finished)")
+        gates = current.get("blocked_on_owner")
+        if not isinstance(gates, list) or any(not isinstance(x, dict) or not isinstance(x.get("placeholder"), str) or not isinstance(x.get("blocks"), list) or not all(isinstance(b, str) for b in x["blocks"]) for x in gates):
+            hard.append("A: blocked_on_owner requires named placeholders and block lists")
+    return not hard
+
+
+class PlaybookHTML(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=False)
+        self.ids = []
+        self.textareas = []
+        self.scripts = []
+        self.controls = {"data-copy": [], "data-sent": []}
+        self.capture = None
+        self.styles = []
+
+    def handle_starttag(self, tag, attrs):
+        if len({key for key, _ in attrs}) != len(attrs):
+            hard.append("E: duplicate HTML attributes are ambiguous")
+        attrs = dict(attrs)
+        if attrs.get("id"):
+            self.ids.append(attrs["id"])
+        for attr in self.controls:
+            if attr in attrs:
+                self.controls[attr].append(attrs[attr])
+        if tag in {"textarea", "script", "style"}:
+            node = {"id": attrs.get("id"), "type": attrs.get("type", ""), "text": ""}
+            self.capture = (tag, node)
+            if tag == "textarea": self.textareas.append(node)
+            elif tag == "script": self.scripts.append(node)
+            else: self.styles.append(node)
+        for attr, value in attrs.items():
+            if not value:
+                continue
+            if attr in {"src", "srcset", "poster", "data", "xlink:href"} or (attr == "href" and tag != "a"):
+                if not value.startswith(("data:", "#")):
+                    hard.append(f"F: loaded resource is not inline: {tag} {attr}={value[:80]!r}")
+            if attr == "href" and tag == "a" and value.strip().lower().startswith(("javascript:", "vbscript:")):
+                hard.append("F: hyperlink contains executable code")
+            if attr == "style": self.styles.append({"text": value})
+            if attr.startswith("on"): self.scripts.append({"id": None, "type": "", "text": value})
+
+    def handle_endtag(self, tag):
+        if self.capture and self.capture[0] == tag:
+            self.capture = None
+
+    def handle_data(self, data):
+        if self.capture:
+            self.capture[1]["text"] += data
+
+    def handle_entityref(self, name):
+        import html
+        self.handle_data(html.unescape("&" + name + ";"))
+
+    def handle_charref(self, name):
+        import html
+        self.handle_data(html.unescape("&#" + name + ";"))
+
+
+def check_html(page, blocks):
+    parsed = PlaybookHTML()
+    parsed.feed(page)
+    if len(parsed.ids) != len(set(parsed.ids)):
+        hard.append("E: duplicate HTML IDs make copy targets ambiguous")
+    ids = [b["html_id"] for b in blocks]
+    if [x["id"] for x in parsed.textareas] != ids:
+        hard.append("E: textarea IDs must match playbook order exactly, without duplicates")
+    for node, block in zip(parsed.textareas, blocks):
+        got, want = node["text"], block["text"]
+        if got != want and not (got.startswith("\n") and got[1:] == want):
+            hard.append(f"E: HTML textarea {node['id']} text differs from playbook JSON")
+    for attr, values in parsed.controls.items():
+        if len(values) != len(ids) or sorted(values) != sorted(ids):
+            hard.append(f"E: {attr} must target each block exactly once")
+    workflow = [x for x in parsed.scripts if x["id"] == "workflow-data" and x["type"] == "application/json"]
+    if len(workflow) != 1:
+        hard.append("E: exactly one application/json workflow-data script is required")
+    else:
+        try:
+            wf = json.loads(workflow[0]["text"])
+            if isinstance(wf, dict): wf = wf.get("blocks")
+            if not isinstance(wf, list) or not all(isinstance(x, dict) for x in wf):
+                raise ValueError("workflow-data must contain a list of block objects")
+            if [x.get("html_id") for x in wf] != ids:
+                hard.append("E: workflow-data must match block order exactly, without duplicates")
+            for node, block in zip(wf, blocks):
+                for key in ("html_id", "workflow_label", "section_heading", "role", "text_sha256"):
+                    if node.get(key) != block[key]: hard.append(f"E: workflow-data {key} mismatch for {block['html_id']}")
+                if type(node.get("index")) is not int or node["index"] != block["block_index"]:
+                    hard.append(f"E: workflow-data index mismatch for {block['html_id']}")
+        except (ValueError, TypeError) as error:
+            hard.append(f"E: invalid workflow-data: {error}")
+    for node in parsed.scripts:
+        if node["type"] in {"application/json", "importmap"}:
+            continue
+        if re.search(r"\b(?:fetch|import|WebSocket|EventSource)\s*\(|\bimport\s+(?:[\w*{]|[\"\'])|\bexport\s+.*?\bfrom\s*[\"\']|XMLHttpRequest|navigator\s*\.\s*sendBeacon", node["text"]):
+            hard.append("F: active script contains a network-loading operation")
+    for node in parsed.styles:
+        if re.search(r"@import\b", node["text"], re.I): hard.append("F: CSS imports a resource")
+        for value in re.findall(r"url\(\s*['\"]?([^)'\"]+)", node["text"], re.I):
+            if not value.strip().startswith(("data:", "#")): hard.append("F: CSS resource is not inline")
+
 def main():
+    hard.clear()
+    notes.clear()
     # ---- A: files exist and parse -------------------------------------------
     for p in [PLAYBOOK, STATUS, HTML, START_HERE, META_PROMPTS] + [
         os.path.join(BUNDLE, x) for x in LEDGERS
@@ -78,7 +222,10 @@ def main():
                          "explicitly accepted a no-wargames run)")
     pb = load_json(PLAYBOOK) if os.path.exists(PLAYBOOK) else None
     st = load_json(STATUS) if os.path.exists(STATUS) else None
-    if hard or pb is None or st is None:
+    if hard:
+        return finish()
+
+    if not valid_shapes(pb, st):
         return finish()
 
     # ---- B: playbook internal consistency -----------------------------------
@@ -119,6 +266,8 @@ def main():
     sblocks = st.get("blocks") or []
     if len(sblocks) != len(blocks):
         hard.append(f"C: STATUS has {len(sblocks)} blocks, playbook has {len(blocks)}")
+    if [b["html_id"] for b in sblocks] != [b["html_id"] for b in blocks]:
+        hard.append("C: status IDs must match playbook order exactly, without duplicates")
     pmap = {b.get("html_id"): b for b in blocks}
     owner_ph_open = set()
     for i, sb in enumerate(sblocks, start=1):
@@ -127,6 +276,9 @@ def main():
         if p is None:
             hard.append(f"C: STATUS block {sid!r} not in playbook")
             continue
+        for field in ("workflow_label", "section_heading", "role"):
+            if sb.get(field) != p.get(field):
+                hard.append(f"C: STATUS {sid} {field} does not match playbook")
         if sb.get("text_sha256") != p.get("text_sha256"):
             hard.append(f"C: STATUS {sid} text_sha256 does not match playbook")
         status = sb.get("status")
@@ -135,8 +287,13 @@ def main():
         if status in COMPLETE_STATUSES and not sb.get("evidence"):
             hard.append(f"C: STATUS {sid} is {status} with empty evidence — "
                         "evidence or it didn't happen")
-        if status not in COMPLETE_STATUSES:
-            owner_ph_open.update(OWNER_PH_RE.findall(p.get("text") or ""))
+        placeholders = set(OWNER_PH_RE.findall(p.get("text") or ""))
+        if placeholders and status not in SKIP_STATUSES:
+            owner_ph_open.update(placeholders)
+            if status != "blocked_on_owner":
+                hard.append(f"C: {sid} contains unresolved owner values but is not blocked_on_owner")
+        if status in SKIP_STATUSES and not sb.get("evidence"):
+            hard.append(f"C: {sid} skipped without an owner-decision evidence reference")
     done_or_skip = COMPLETE_STATUSES | SKIP_STATUSES
     firsts = [sb.get("html_id") for sb in sblocks if sb.get("status") not in done_or_skip]
     cnb = (st.get("current_state") or {}).get("current_next_block") or {}
@@ -152,56 +309,17 @@ def main():
     listed = {row.get("placeholder") for row in
               (st.get("current_state") or {}).get("blocked_on_owner") or []}
     for ph in sorted(owner_ph_open):
+        named = [row for row in st["current_state"]["blocked_on_owner"] if row["placeholder"] == ph]
+        expected = {b["html_id"] for b in blocks if ph in b["text"] and next((x["status"] for x in sblocks if x["html_id"] == b["html_id"]), "") not in SKIP_STATUSES}
+        if len(named) != 1 or set(named[0]["blocks"]) != expected:
+            hard.append(f"C: owner placeholder {ph} must list its exact affected blocks once")
         if ph not in listed:
             hard.append(f"C: unresolved owner gate {ph} (in a non-complete block) is "
                         "missing from current_state.blocked_on_owner")
 
     # ---- E: HTML parity ------------------------------------------------------
     page = open(HTML, encoding="utf-8").read() if os.path.exists(HTML) else ""
-    tex = dict(re.findall(r'<textarea id="(block-\d+)"[^>]*>(.*?)</textarea>', page, re.S))
-    for b in blocks:
-        bid, want = b["html_id"], b.get("text") or ""
-        if bid not in tex:
-            hard.append(f"E: HTML missing <textarea id=\"{bid}\">")
-            continue
-        got = html_mod.unescape(tex[bid])
-        if got != want and got.lstrip("\n") != want and got.strip() != want.strip():
-            hard.append(f"E: HTML textarea {bid} text differs from playbook JSON")
-    for attr in ("data-copy", "data-sent"):
-        n = page.count(f'{attr}="block-')
-        if n < len(blocks):
-            hard.append(f"E: HTML has {n} {attr} controls for {len(blocks)} blocks")
-    m = re.search(r'<script type="application/json" id="workflow-data">(.*?)</script>',
-                  page, re.S)
-    if not m:
-        hard.append("E: HTML missing embedded workflow-data JSON blob")
-    else:
-        try:
-            wf = json.loads(html_mod.unescape(m.group(1)))
-        except Exception as e:  # noqa: BLE001
-            wf = None
-            hard.append(f"E: workflow-data blob is not valid JSON: {e}")
-        if isinstance(wf, dict):
-            wf = wf.get("blocks") or []
-        if isinstance(wf, list):
-            wmap = {w.get("html_id"): w for w in wf if isinstance(w, dict)}
-            for b in blocks:
-                w = wmap.get(b["html_id"])
-                if w is None:
-                    hard.append(f"E: workflow-data missing {b['html_id']}")
-                elif w.get("text_sha256") != b.get("text_sha256"):
-                    hard.append(f"E: workflow-data sha mismatch for {b['html_id']}")
-
-    # ---- F: HTML self-containment -------------------------------------------
-    # Plain hyperlinks (href="https://…") are allowed — a link the owner may click is
-    # not a loaded resource. Everything else external is banned.
-    page_no_links = re.sub(r'href="https?://[^"]*"', 'href=""', page)
-    for ref in re.findall(r'https?://[^\s"\'<>&)]+', page_no_links):
-        if "www.w3.org" not in ref:
-            hard.append(f"F: external reference in HTML: {ref[:80]}")
-    for tok in ("fetch(", "XMLHttpRequest", "import("):
-        if tok in page:
-            hard.append(f"F: HTML contains forbidden network/exec token: {tok}")
+    check_html(page, blocks)
 
     # ---- G: no leftover generation placeholders ------------------------------
     for root, _dirs, files in os.walk(BUNDLE):

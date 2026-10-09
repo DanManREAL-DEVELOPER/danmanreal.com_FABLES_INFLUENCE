@@ -34,9 +34,9 @@ Each wargame produces two files plus a report slot:
 | `tasks/NN-<slug>.md` | the executor | executor-blind brief (template: `task-brief.template.md`) |
 | `reports/NN-<slug>-REPORT.md` | everyone after | REPORT HOME — written during/after execution |
 
-**Executor-blind** is the bar that matters: a mid-tier model must be able to execute the
-brief without asking a single question. If the brief needs the planner's context to make
-sense, the planning isn't done.
+**Executor-blind** means a fresh session has the mission context, scope boundaries, and
+evidence needed to act. Missing material owner decisions must still be asked; the brief
+is not permission to guess them. Routine implementation choices remain the executor's.
 
 ## Which playbook blocks get wargamed
 
@@ -61,8 +61,9 @@ defect; fixes are recorded in the LEDGER.
 
 1. **Grep audit** — mechanically scan every wargame for the required sections and the
    eight criteria. Missing section = defect. (Cheap, catches structure rot.)
-2. **Blind-executor test** — give a brief to a fresh, cheaper agent with zero context.
-   Every question it needs to ask is a defect in the brief.
+2. **Fresh-session review** — check whether the brief carries its own material context.
+   An independent agent is optional when useful and authorized; do not launch one merely
+   to satisfy this document. Distinguish avoidable context gaps from real owner decisions.
 3. **Per-move audit** — for the highest-risk wargames, walk move by move: does every move
    have expected-observation / failure / cause / counter? Missing rows = defects.
 4. **Fork-trigger audit** — for missions with concurrency or shared state: does the spec
@@ -74,9 +75,10 @@ defect; fixes are recorded in the LEDGER.
 
 ## Standing rules during execution
 
-- Read-only recon before any mutating move, every time.
-- The brief is the contract: an executor who improvises outside it has failed the
-  mission even if the outcome looks right.
+- Establish relevant current state before a mutation; reuse fresh evidence when valid.
+- Honor the brief's outcome, authorized scope, protected data, and operation-specific
+  gates. Adapt routine implementation steps when evidence warrants, and record material
+  deviations. Existing owner authorization remains valid; do not add approval stops.
 - REPORT HOME is mandatory: no mission ends without its report written.
 - A `{{OWNER:*}}` placeholder encountered mid-run = stop that route, record it in the
   owner-decisions ledger, continue only on unblocked routes.
